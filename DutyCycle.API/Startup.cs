@@ -1,5 +1,10 @@
+using System.Reflection;
+using AutoMapper;
+using DutyCycle.API.Mapping;
+using DutyCycle.Infrastructure.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,10 +24,22 @@ namespace DutyCycle.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddAutoMapper(configuration =>
+            {
+                configuration.AddProfile(typeof(ModelsMappingProfile));
+            });
+
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+
+            services.AddDbContext<DutyCycleDbContext>(builder =>
+                builder.UseNpgsql(
+                    Configuration["ConnectionString"], 
+                    optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.FullName)));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
             if (env.IsDevelopment())
             {
@@ -41,6 +58,8 @@ namespace DutyCycle.API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }
