@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LanguageExt;
 
 namespace DutyCycle
 {
@@ -21,24 +22,31 @@ namespace DutyCycle
 
         public int DutiesCount { get; private set; }
 
-        public IReadOnlyCollection<GroupMember> Members => _groupMembers;
+        public IReadOnlyCollection<GroupMember> Members
+        {
+            get
+            {
+                var result = new MembersOrderer().Order(Id, _groupMembers);
+                return result.IfFail(exception => throw exception);
+            }
+        }
 
         public IEnumerable<GroupMember> CurrentDuties
         {
             get
             {
                 var effectiveDutiesCount = Math.Min(DutiesCount, _groupMembers.Count);
-                return _groupMembers.Take(effectiveDutiesCount);
+                return Members.Take(effectiveDutiesCount);
             }
         }
 
         public void AddMember(GroupMemberInfo groupMemberInfo)
         {
-            var lastMemberId = _groupMembers.LastOrNone().Map(member => member.Id).ToNullable();
+            var lastMemberId = Members.LastOrNone().Map(member => member.Id).ToNullable();
             var newGroupMember = new GroupMember(Guid.NewGuid(), groupMemberInfo.Name, lastMemberId);
             _groupMembers.Add(newGroupMember);
         }
-
+        
         private int _id;
         private List<GroupMember> _groupMembers = new List<GroupMember>();
     }

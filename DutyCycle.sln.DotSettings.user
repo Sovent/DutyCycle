@@ -2,5 +2,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4a083371_002D5fb7_002D4358_002Db909_002D89e3f52144eb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AddMemberToEmptyGroup_NoFollowedGroupMemberId" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::68248CCE-4ECB-4652-BA5B-564A915464B8::.NETCoreApp,Version=v3.1::DutyCycle.Tests.GroupTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::68248CCE-4ECB-4652-BA5B-564A915464B8::.NETCoreApp,Version=v3.1::DutyCycle.Tests.MembersOrdererTests.OrderUnorderedMembers_Success&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::68248CCE-4ECB-4652-BA5B-564A915464B8::.NETCoreApp,Version=v3.1::DutyCycle.Tests.MembersOrdererTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
