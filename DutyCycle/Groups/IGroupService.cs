@@ -11,5 +11,7 @@ namespace DutyCycle
 
         Task<Group> CreateGroup(GroupSettings groupSettings);
         Task AddMemberToGroup(int groupId, GroupMemberInfo groupMemberInfo);
+
+        Task RotateDutiesInGroup(int groupId);
     }
 }
