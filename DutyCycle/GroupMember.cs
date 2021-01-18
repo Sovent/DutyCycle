@@ -18,6 +18,6 @@ namespace DutyCycle
         
         public string Name { get; private set; }
         
-        public Guid? FollowedGroupMemberId { get; private set; }
+        public Guid? FollowedGroupMemberId { get; set; }
     }
 }

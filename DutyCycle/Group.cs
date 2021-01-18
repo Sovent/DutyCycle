@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LanguageExt;
 
 namespace DutyCycle
 {
@@ -38,6 +37,29 @@ namespace DutyCycle
                 var effectiveDutiesCount = Math.Min(DutiesCount, _groupMembers.Count);
                 return Members.Take(effectiveDutiesCount);
             }
+        }
+
+        public void RotateDuties()
+        {
+            var groupMembersCount = _groupMembers.Count;
+            if (groupMembersCount == 0)
+            {
+                return;
+            }
+            
+            var positionsToAdvance = DutiesCount % groupMembersCount;
+            if (positionsToAdvance == 0)
+            {
+                return;
+            }
+
+            var currentRotation = Members.ToArray();
+            var currentTail = currentRotation[groupMembersCount - 1];
+            var currentFirst = currentRotation[0];
+            var newFirst = currentRotation[positionsToAdvance];
+
+            newFirst.FollowedGroupMemberId = null;
+            currentFirst.FollowedGroupMemberId = currentTail.Id;
         }
 
         public void AddMember(GroupMemberInfo groupMemberInfo)
