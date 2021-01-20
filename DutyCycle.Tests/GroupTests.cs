@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using AutoFixture;
 using AutoFixture.NUnit3;
@@ -43,11 +44,44 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
+        public void AddMemberWithCallback_ExecutesCallback(Group group, GroupMemberInfo member)
+        {
+            var callbackMock = new Mock<TriggerCallback>(Guid.NewGuid());
+            group.AddActionCallback(GroupAction.AddMember, callbackMock.Object);
+
+            group.AddMember(member, _triggersTooling);
+            
+            callbackMock.Verify(mock => mock.Execute(group, _triggersTooling), Times.Once);
+        }
+        
+        [Test, AutoData]
+        public void AddMemberWithCallbackForDifferentAction_DoesNotExecuteCallback(Group group, GroupMemberInfo member)
+        {
+            var callbackMock = new Mock<TriggerCallback>(Guid.NewGuid());
+            group.AddActionCallback(GroupAction.RotateDuties, callbackMock.Object);
+
+            group.AddMember(member, _triggersTooling);
+            
+            callbackMock.Verify(mock => mock.Execute(group, _triggersTooling), Times.Never);
+        }
+
+        [Test, AutoData]
         public void RotateDutiesInEmptyGroup_DoesNothing(Group group)
         {
             group.RotateDuties(_triggersTooling);
             
             CollectionAssert.IsEmpty(group.Members);
+        }
+
+        [Test, AutoData]
+        public void RotateDutiesInEmptyGroup_DoesNotExecuteCallback(Group group)
+        {
+            var callbackMock = new Mock<TriggerCallback>(Guid.NewGuid());
+            group.AddActionCallback(GroupAction.RotateDuties, callbackMock.Object);
+
+            group.RotateDuties(_triggersTooling);
+            
+            callbackMock.Verify(mock => mock.Execute(It.IsAny<Group>(), It.IsAny<TriggersTooling>()), Times.Never);
         }
 
         [Test, AutoData]
@@ -59,6 +93,18 @@ namespace DutyCycle.Tests
             var newDuty = group.CurrentDuties.Single();
             
             Assert.AreEqual(singleMember.Name, newDuty.Name);
+        }
+        
+        [Test, AutoData]
+        public void RotateDutiesInGroupOfOnePerson_DoesNotExecuteCallback(Group group, GroupMemberInfo singleMember)
+        {
+            group.AddMember(singleMember, _triggersTooling);
+            var callbackMock = new Mock<TriggerCallback>(Guid.NewGuid());
+            group.AddActionCallback(GroupAction.RotateDuties, callbackMock.Object);
+
+            group.RotateDuties(_triggersTooling);
+            
+            callbackMock.Verify(mock => mock.Execute(It.IsAny<Group>(), It.IsAny<TriggersTooling>()), Times.Never);
         }
 
         [Test, AutoData]
@@ -96,6 +142,22 @@ namespace DutyCycle.Tests
             Assert.AreEqual(originalFirst.Name, newFirst.Name);
             Assert.AreEqual(originalSecond.Name, newSecond.Name);
         }
+        
+        [Test, AutoData]
+        public void RotateDutiesIntoSameRotation_DoesNotExecuteCallback(
+            GroupMemberInfo originalFirst,
+            GroupMemberInfo originalSecond)
+        {
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 4);
+            group.AddMember(originalFirst, _triggersTooling);
+            group.AddMember(originalSecond, _triggersTooling);
+            var callbackMock = new Mock<TriggerCallback>(Guid.NewGuid());
+            group.AddActionCallback(GroupAction.RotateDuties, callbackMock.Object);
+            
+            group.RotateDuties(_triggersTooling);
+            
+            callbackMock.Verify(mock => mock.Execute(It.IsAny<Group>(), It.IsAny<TriggersTooling>()), Times.Never);
+        }
 
         [Test, AutoData]
         public void RotateDutiesWithoutEnoughMembersToPassDutyCompletely_LeavesDutyToSomeOfThePreviousDuties(
@@ -132,6 +194,22 @@ namespace DutyCycle.Tests
             var newDuty = group.CurrentDuties.Single();
             
             Assert.AreEqual(memberToRetrieveDuty.Name, newDuty.Name);
+        }
+        
+        [Test, AutoData]
+        public void RotateDutiesWithActualChanges_ExecutesCallback(
+            GroupMemberInfo memberToPassDuty,
+            GroupMemberInfo memberToRetrieveDuty)
+        {
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 1);
+            group.AddMember(memberToPassDuty, _triggersTooling);
+            group.AddMember(memberToRetrieveDuty, _triggersTooling);
+            var callbackMock = new Mock<TriggerCallback>(Guid.NewGuid());
+            group.AddActionCallback(GroupAction.RotateDuties, callbackMock.Object);
+            
+            group.RotateDuties(_triggersTooling);
+            
+            callbackMock.Verify(mock => mock.Execute(group, _triggersTooling), Times.Once);
         }
 
         private Fixture _fixture;

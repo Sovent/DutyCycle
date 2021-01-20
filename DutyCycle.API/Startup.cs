@@ -1,7 +1,9 @@
 using System.Reflection;
 using AutoMapper;
 using DutyCycle.API.Mapping;
+using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
+using DutyCycle.Triggers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,8 @@ namespace DutyCycle.API
 
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddSingleton<ISlackClient, SlackClient>();
+            services.AddSingleton<TriggersTooling>();
 
             services.AddDbContext<DutyCycleDbContext>(builder =>
                 builder.UseNpgsql(
