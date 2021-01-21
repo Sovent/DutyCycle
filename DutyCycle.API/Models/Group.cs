@@ -12,6 +12,10 @@ namespace DutyCycle.API.Models
 
         public int DutiesCount { get; set; }
         
-        public IReadOnlyCollection<GroupMember> Members { get; set; }
+        public IReadOnlyCollection<GroupMember> CurrentDuties { get; set; }
+        
+        public IReadOnlyCollection<GroupMember> NextDuties { get; set; }
+        
+        public IReadOnlyCollection<GroupActionTrigger> Triggers { get; set; }
     }
 }

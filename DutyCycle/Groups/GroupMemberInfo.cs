@@ -4,13 +4,17 @@ namespace DutyCycle
 {
     public class GroupMemberInfo
     {
-        public GroupMemberInfo(string name)
+        public GroupMemberInfo(Guid id, string name, Guid? followedGroupMemberId)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+            Id = id;
             Name = name;
+            FollowedGroupMemberId = followedGroupMemberId;
         }
 
+        public Guid Id { get; }
+        
         public string Name { get; }
+        
+        public Guid? FollowedGroupMemberId { get; }
     }
 }

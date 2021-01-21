@@ -31,8 +31,27 @@ namespace DutyCycle.API.Controllers
         [Route("members")]
         public async Task<IActionResult> AddMember([FromRoute]int groupId, [FromBody]AddMemberRequest request)
         {
-            var groupMemberInfo = new GroupMemberInfo(request.Name);
+            var groupMemberInfo = new NewGroupMemberInfo(request.Name);
             await _groupService.AddMemberToGroup(groupId, groupMemberInfo);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("callbacks")]
+        public async Task<IActionResult> AddCallback(
+            [FromRoute] int groupId,
+            [FromBody] SendSlackMessageTrigger request) // todo: polymorphic deserialization of add trigger
+        {
+            var callback = _mapper.Map<Triggers.GroupActionTrigger>(request);
+            await _groupService.AddCallback(groupId, callback);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("callbacks/{callbackId}")]
+        public async Task<IActionResult> RemoveCallback([FromRoute] int groupId, [FromRoute] Guid callbackId)
+        {
+            await _groupService.RemoveCallback(groupId, callbackId);
             return Ok();
         }
         

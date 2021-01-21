@@ -26,7 +26,7 @@ namespace DutyCycle
 
         public int DutiesCount { get; private set; }
 
-        public IReadOnlyCollection<GroupMember> Members
+        public IEnumerable<GroupMember> Members
         {
             get
             {
@@ -35,16 +35,28 @@ namespace DutyCycle
             }
         }
 
-        public IEnumerable<GroupMember> CurrentDuties
+        public GroupInfo Info
         {
             get
             {
                 var effectiveDutiesCount = Math.Min(DutiesCount, _groupMembers.Count);
-                return Members.Take(effectiveDutiesCount);
+                var memberViews = Members
+                    .Select(member => new GroupMemberInfo(member.Id, member.Name, member.FollowedGroupMemberId))
+                    .ToArray();
+                var currentDuties = memberViews[..effectiveDutiesCount];
+                var nextDuties = memberViews[effectiveDutiesCount..];
+                return new GroupInfo(
+                    Id,
+                    Name, 
+                    CyclingCronExpression, 
+                    DutiesCount, 
+                    currentDuties, 
+                    nextDuties,
+                    _triggers);
             }
         }
 
-        public async Task RotateDuties(TriggersTooling triggersTooling)
+        public async Task RotateDuties(TriggersContext triggersContext)
         {
             var groupMembersCount = _groupMembers.Count;
             if (groupMembersCount == 0)
@@ -66,49 +78,35 @@ namespace DutyCycle
             newFirst.FollowedGroupMemberId = null;
             currentFirst.FollowedGroupMemberId = currentTail.Id;
 
-            await RunTrigger(GroupAction.RotateDuties, triggersTooling);
+            await RunTriggers(GroupAction.RotateDuties, triggersContext);
         }
 
-        public async Task AddMember(GroupMemberInfo groupMemberInfo, TriggersTooling triggersTooling)
+        public async Task AddMember(NewGroupMemberInfo newGroupMemberInfo, TriggersContext triggersContext)
         {
             var lastMemberId = Members.LastOrNone().Map(member => member.Id).ToNullable();
-            var newGroupMember = new GroupMember(Guid.NewGuid(), groupMemberInfo.Name, lastMemberId);
+            var newGroupMember = new GroupMember(Guid.NewGuid(), newGroupMemberInfo.Name, lastMemberId);
             _groupMembers.Add(newGroupMember);
 
-            await RunTrigger(GroupAction.AddMember, triggersTooling);
+            await RunTriggers(GroupAction.AddMember, triggersContext);
         }
 
-        public void AddActionCallback(GroupAction action, TriggerCallback callback)
+        public void AddActionTrigger(GroupActionTrigger trigger)
         {
-            var trigger = GetOrCreateTrigger(action);
-            trigger.AddCallback(callback);
+            _triggers.Add(trigger);
         }
 
-        public void RemoveActionCallback(Guid callbackId)
+        public void RemoveActionCallback(Guid triggerId)
         {
-            foreach (var groupActionTrigger in _triggers)
-            {
-                groupActionTrigger.TryRemoveCallback(callbackId);
-            }
+            _triggers.RemoveAll(trigger => trigger.Id == triggerId);
         }
 
-        private async Task RunTrigger(GroupAction action, TriggersTooling triggersTooling)
+        private async Task RunTriggers(GroupAction action, TriggersContext triggersContext)
         {
-            var trigger = GetOrCreateTrigger(action);
-            await trigger.Run(this, triggersTooling);
-        }
-        
-        private GroupActionTrigger GetOrCreateTrigger(GroupAction groupAction)
-        {
-            var trigger = _triggers.SingleOrDefault(action => action.Action == groupAction);
-            if (trigger != default)
-            {
-                return trigger;
-            }
+            var triggersToRun = _triggers
+                .Where(actionTrigger => actionTrigger.Action == action)
+                .Select(trigger => trigger.Run(Info, triggersContext));
 
-            var triggerToCreate = new GroupActionTrigger(groupAction);
-            _triggers.Add(triggerToCreate);
-            return triggerToCreate;
+            await Task.WhenAll(triggersToRun);
         }
 
         private List<GroupActionTrigger> _triggers = new List<GroupActionTrigger>();

@@ -18,8 +18,8 @@ namespace DutyCycle.Infrastructure.EntityFramework
                 builder.HasKey(group => group.Id);
                 builder.HasMany<GroupMember>("_groupMembers").WithOne();
                 builder.Ignore(group => group.Members);
-                builder.Ignore(group => group.CurrentDuties);
-                builder.HasMany<GroupActionTrigger>().WithOne();
+                builder.Ignore(group => group.Info);
+                builder.HasMany<GroupActionTrigger>("_triggers").WithOne();
             });
 
             modelBuilder.Entity<GroupMember>(builder =>
@@ -35,17 +35,11 @@ namespace DutyCycle.Infrastructure.EntityFramework
 
             modelBuilder.Entity<GroupActionTrigger>(builder =>
             {
-                builder.HasKey("GroupId", "Action");
-                builder.HasMany<TriggerCallback>("_callbacks").WithOne();
-            });
-
-            modelBuilder.Entity<TriggerCallback>(builder =>
-            {
-                builder.HasKey(callback => callback.Id);
-                builder.Property(callback => callback.Id).ValueGeneratedNever();
+                builder.HasKey(trigger => trigger.Id);
+                builder.Property(trigger => trigger.Id).ValueGeneratedNever();
                 builder
-                    .HasDiscriminator<string>("CallbackType")
-                    .HasValue<SendSlackMessageCallback>("send_slack_message");
+                    .HasDiscriminator<string>("TriggerType")
+                    .HasValue<SendSlackMessageTrigger>("send_slack_message");
             });
         }
         

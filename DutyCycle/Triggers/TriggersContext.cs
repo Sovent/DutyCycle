@@ -2,9 +2,9 @@ using System;
 
 namespace DutyCycle.Triggers
 {
-    public class TriggersTooling
+    public class TriggersContext
     {
-        public TriggersTooling(ISlackClient slackClient)
+        public TriggersContext(ISlackClient slackClient)
         {
             SlackClient = slackClient ?? throw new ArgumentNullException(nameof(slackClient));
         }

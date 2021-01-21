@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using DutyCycle.API.Mapping;
 using DutyCycle.Infrastructure;
@@ -25,7 +25,11 @@ namespace DutyCycle.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                var serializerOptions = options.JsonSerializerOptions;
+                serializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             services.AddAutoMapper(configuration =>
             {
@@ -35,7 +39,7 @@ namespace DutyCycle.API
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddSingleton<ISlackClient, SlackClient>();
-            services.AddSingleton<TriggersTooling>();
+            services.AddSingleton<TriggersContext>();
 
             services.AddDbContext<DutyCycleDbContext>(builder =>
                 builder.UseNpgsql(

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DutyCycle.Errors;
 using LanguageExt;
@@ -16,9 +17,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
 
         public async Task<Option<Group>> TryGet(int groupId)
         {
-            return await _dbContext.Groups
-                .Include("_groupMembers")
-                .FirstOrDefaultAsync(group => group.Id == groupId);
+            return await GroupsWithRelatedData.FirstOrDefaultAsync(group => group.Id == groupId);
         }
 
         public async Task<Group> Get(int groupId)
@@ -29,7 +28,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
 
         public async Task<IReadOnlyCollection<Group>> GetAll()
         {
-            var groups = await _dbContext.Groups.ToListAsync();
+            var groups = await GroupsWithRelatedData.ToListAsync();
             return groups;
         }
 
@@ -42,6 +41,11 @@ namespace DutyCycle.Infrastructure.EntityFramework
 
             await _dbContext.SaveChangesAsync();
         }
+
+        private IQueryable<Group> GroupsWithRelatedData =>
+            _dbContext.Groups
+                .Include("_groupMembers")
+                .Include("_triggers");
 
         private readonly DutyCycleDbContext _dbContext;
     }

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DutyCycle.API.Migrations
 {
     [DbContext(typeof(DutyCycleDbContext))]
-    [Migration("20210120085615_AddTriggers")]
+    [Migration("20210121102350_AddTriggers")]
     partial class AddTriggers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,44 +68,31 @@ namespace DutyCycle.API.Migrations
 
             modelBuilder.Entity("DutyCycle.Triggers.GroupActionTrigger", b =>
                 {
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Action")
                         .HasColumnType("integer");
 
-                    b.HasKey("GroupId", "Action");
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("integer");
 
-                    b.ToTable("GroupActionTrigger");
-                });
-
-            modelBuilder.Entity("DutyCycle.Triggers.TriggerCallback", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CallbackType")
+                    b.Property<string>("TriggerType")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("GroupActionTriggerAction")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("GroupActionTriggerGroupId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupActionTriggerGroupId", "GroupActionTriggerAction");
+                    b.HasIndex("GroupId");
 
-                    b.ToTable("TriggerCallback");
+                    b.ToTable("GroupActionTrigger");
 
-                    b.HasDiscriminator<string>("CallbackType").HasValue("TriggerCallback");
+                    b.HasDiscriminator<string>("TriggerType").HasValue("GroupActionTrigger");
                 });
 
-            modelBuilder.Entity("DutyCycle.Triggers.SendSlackMessageCallback", b =>
+            modelBuilder.Entity("DutyCycle.Triggers.SendSlackMessageTrigger", b =>
                 {
-                    b.HasBaseType("DutyCycle.Triggers.TriggerCallback");
+                    b.HasBaseType("DutyCycle.Triggers.GroupActionTrigger");
 
                     b.Property<string>("ChannelId")
                         .HasColumnType("text");
@@ -130,27 +117,15 @@ namespace DutyCycle.API.Migrations
             modelBuilder.Entity("DutyCycle.Triggers.GroupActionTrigger", b =>
                 {
                     b.HasOne("DutyCycle.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DutyCycle.Triggers.TriggerCallback", b =>
-                {
-                    b.HasOne("DutyCycle.Triggers.GroupActionTrigger", null)
-                        .WithMany("_callbacks")
-                        .HasForeignKey("GroupActionTriggerGroupId", "GroupActionTriggerAction");
+                        .WithMany("_triggers")
+                        .HasForeignKey("GroupId");
                 });
 
             modelBuilder.Entity("DutyCycle.Group", b =>
                 {
                     b.Navigation("_groupMembers");
-                });
 
-            modelBuilder.Entity("DutyCycle.Triggers.GroupActionTrigger", b =>
-                {
-                    b.Navigation("_callbacks");
+                    b.Navigation("_triggers");
                 });
 #pragma warning restore 612, 618
         }

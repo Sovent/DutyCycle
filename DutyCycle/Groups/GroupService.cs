@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DutyCycle.Triggers;
 using LanguageExt;
@@ -8,20 +9,22 @@ namespace DutyCycle
 {
     public class GroupService : IGroupService
     {
-        public GroupService(IGroupRepository repository, TriggersTooling triggersTooling)
+        public GroupService(IGroupRepository repository, TriggersContext triggersContext)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _triggersTooling = triggersTooling ?? throw new ArgumentNullException(nameof(triggersTooling));
+            _triggersContext = triggersContext ?? throw new ArgumentNullException(nameof(triggersContext));
         }
         
-        public Task<Option<Group>> TryGetGroup(int groupId)
+        public async Task<Option<GroupInfo>> TryGetGroup(int groupId)
         {
-            return _repository.TryGet(groupId);
+            var group = await _repository.TryGet(groupId);
+            return group.Map(g => g.Info);
         }
 
-        public Task<IReadOnlyCollection<Group>> GetAllGroups()
+        public async Task<IReadOnlyCollection<GroupInfo>> GetAllGroups()
         {
-            return _repository.GetAll();
+            var groups = await _repository.GetAll();
+            return groups.Select(group => group.Info).ToArray();
         }
 
         public async Task<Group> CreateGroup(GroupSettings groupSettings)
@@ -33,23 +36,39 @@ namespace DutyCycle
             return group;
         }
 
-        public async Task AddMemberToGroup(int groupId, GroupMemberInfo groupMemberInfo)
+        public async Task AddMemberToGroup(int groupId, NewGroupMemberInfo newGroupMemberInfo)
         {
-            if (groupMemberInfo == null) throw new ArgumentNullException(nameof(groupMemberInfo));
+            if (newGroupMemberInfo == null) throw new ArgumentNullException(nameof(newGroupMemberInfo));
             
             var group = await _repository.Get(groupId);
-            await group.AddMember(groupMemberInfo, _triggersTooling);
+            await group.AddMember(newGroupMemberInfo, _triggersContext);
+            await _repository.Save(group);
+        }
+
+        public async Task AddCallback(int groupId, GroupActionTrigger trigger)
+        {
+            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
+            
+            var group = await _repository.Get(groupId);
+            group.AddActionTrigger(trigger);
+            await _repository.Save(group);
+        }
+
+        public async Task RemoveCallback(int groupId, Guid callbackId)
+        {
+            var group = await _repository.Get(groupId);
+            group.RemoveActionCallback(callbackId);
             await _repository.Save(group);
         }
 
         public async Task RotateDutiesInGroup(int groupId)
         {
             var group = await _repository.Get(groupId);
-            await group.RotateDuties(_triggersTooling);
+            await group.RotateDuties(_triggersContext);
             await _repository.Save(group);
         }
 
         private readonly IGroupRepository _repository;
-        private readonly TriggersTooling _triggersTooling;
+        private readonly TriggersContext _triggersContext;
     }
 }
