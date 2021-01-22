@@ -3,8 +3,14 @@
   "profiles": {
     "DutyCycle.API": {
       "commandName": "Project",
-      "launchUrl": "weatherforecast",
       "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "DutyCycle.Worker": {
+      "commandName": "Project",
+      "commandLineArgs": "--worker",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
