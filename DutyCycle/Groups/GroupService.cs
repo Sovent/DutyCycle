@@ -9,9 +9,16 @@ namespace DutyCycle
 {
     public class GroupService : IGroupService
     {
-        public GroupService(IGroupRepository repository, TriggersContext triggersContext)
+        public GroupService(
+            IGroupRepository repository,
+            IGroupSettingsValidator groupSettingsValidator,
+            IRotationScheduler rotationScheduler,
+            TriggersContext triggersContext)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _groupSettingsValidator =
+                groupSettingsValidator ?? throw new ArgumentNullException(nameof(groupSettingsValidator));
+            _rotationScheduler = rotationScheduler ?? throw new ArgumentNullException(nameof(rotationScheduler));
             _triggersContext = triggersContext ?? throw new ArgumentNullException(nameof(triggersContext));
         }
         
@@ -31,8 +38,13 @@ namespace DutyCycle
         {
             if (groupSettings == null) throw new ArgumentNullException(nameof(groupSettings));
             
+            _groupSettingsValidator.Validate(groupSettings);
+            
             var group = new Group(groupSettings.Name, groupSettings.CyclingCronExpression, groupSettings.DutiesCount);
             await _repository.Save(group);
+            
+            _rotationScheduler.ScheduleOrRescheduleForAGroup(group.Info);
+            
             return group;
         }
 
@@ -69,6 +81,8 @@ namespace DutyCycle
         }
 
         private readonly IGroupRepository _repository;
+        private readonly IGroupSettingsValidator _groupSettingsValidator;
+        private readonly IRotationScheduler _rotationScheduler;
         private readonly TriggersContext _triggersContext;
     }
 }

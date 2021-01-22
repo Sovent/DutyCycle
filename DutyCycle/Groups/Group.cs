@@ -10,11 +10,8 @@ namespace DutyCycle
     {
         public Group(string name, string cyclingCronExpression, int dutiesCount)
         {
-            if (dutiesCount <= 0) throw new ArgumentOutOfRangeException(nameof(dutiesCount));
-            
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            CyclingCronExpression = cyclingCronExpression 
-                                    ?? throw new ArgumentNullException(nameof(cyclingCronExpression));
+            Name = name;
+            CyclingCronExpression = cyclingCronExpression;
             DutiesCount = dutiesCount;
         }
 

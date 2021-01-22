@@ -7,7 +7,8 @@ namespace DutyCycle.Infrastructure
     {
         public Task SendMessageToChannel(string channelId, string message)
         {
-            throw new System.NotImplementedException();
+            // todo: implement
+            return Task.CompletedTask;
         }
 
         public Task AddUserToGroup(string memberId, string groupId)

@@ -4,6 +4,8 @@ using DutyCycle.API.Mapping;
 using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
 using DutyCycle.Triggers;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,8 @@ namespace DutyCycle.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration["ConnectionString"];
+            
             services.AddControllers().AddJsonOptions(options =>
             {
                 var serializerOptions = options.JsonSerializerOptions;
@@ -40,11 +44,21 @@ namespace DutyCycle.API
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddSingleton<ISlackClient, SlackClient>();
             services.AddSingleton<TriggersContext>();
+            services.AddSingleton<ICronValidator, CronValidator>();
+            services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();
+            services.AddSingleton<IRotationScheduler, RotationScheduler>();
 
             services.AddDbContext<DutyCycleDbContext>(builder =>
+            {
                 builder.UseNpgsql(
-                    Configuration["ConnectionString"], 
-                    optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.FullName)));
+                    connectionString,
+                    optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.FullName));
+            });
+
+            services.AddHangfire(configuration => configuration
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(connectionString));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
