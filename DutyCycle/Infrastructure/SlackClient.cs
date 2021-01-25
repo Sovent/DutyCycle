@@ -1,19 +1,29 @@
+using System;
 using System.Threading.Tasks;
 using DutyCycle.Triggers;
+using SlackAPI;
 
 namespace DutyCycle.Infrastructure
 {
     public class SlackClient : ISlackClient
     {
-        public Task SendMessageToChannel(string channelId, string message)
+        private readonly SlackTaskClient _slackTaskClient;
+
+        public SlackClient(SlackTaskClient slackTaskClient)
         {
-            // todo: implement
-            return Task.CompletedTask;
+            _slackTaskClient = slackTaskClient ?? throw new ArgumentNullException(nameof(slackTaskClient));
+        }
+        
+        public async Task SendMessageToChannel(string channelId, string message)
+        {
+            if (channelId == null) throw new ArgumentNullException(nameof(channelId));
+            if (message == null) throw new ArgumentNullException(nameof(message));
+            
+            await _slackTaskClient.PostMessageAsync(channelId, message);
         }
 
-        public Task AddUserToGroup(string memberId, string groupId)
+        public async Task AddUserToGroup(string memberId, string groupId)
         {
-            throw new System.NotImplementedException();
         }
 
         public Task RemoveUserToGroup(string memberId, string groupId)

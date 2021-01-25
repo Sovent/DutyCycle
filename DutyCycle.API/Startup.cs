@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SlackAPI;
+using SlackClient = DutyCycle.Infrastructure.SlackClient;
 
 namespace DutyCycle.API
 {
@@ -47,6 +49,7 @@ namespace DutyCycle.API
             services.AddSingleton<ICronValidator, CronValidator>();
             services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();
             services.AddSingleton<IRotationScheduler, RotationScheduler>();
+            services.AddSingleton(_ => new SlackTaskClient(Configuration["SlackOAuthToken"]));
 
             services.AddDbContext<DutyCycleDbContext>(builder =>
             {
