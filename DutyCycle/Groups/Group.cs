@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cronos;
 using DutyCycle.Triggers;
 
 namespace DutyCycle
 {
     public class Group
     {
-        public Group(string name, string cyclingCronExpression, int dutiesCount)
+        public Group(string name, CronExpression cyclingCronExpression, int dutiesCount)
         {
             Name = name;
             CyclingCronExpression = cyclingCronExpression;
@@ -19,7 +20,7 @@ namespace DutyCycle
 
         public string Name { get; private set; }
         
-        public string CyclingCronExpression { get; private set; }
+        public CronExpression CyclingCronExpression { get; private set; }
 
         public int DutiesCount { get; private set; }
 

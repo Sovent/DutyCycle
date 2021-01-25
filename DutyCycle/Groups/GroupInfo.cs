@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cronos;
 using DutyCycle.Triggers;
 
 namespace DutyCycle
@@ -9,7 +10,7 @@ namespace DutyCycle
         public GroupInfo(
             int id,
             string name,
-            string cyclingCronExpression,
+            CronExpression cyclingCronExpression,
             int dutiesCount,
             IReadOnlyCollection<GroupMemberInfo> currentDuties,
             IReadOnlyCollection<GroupMemberInfo> nextDuties,
@@ -28,7 +29,7 @@ namespace DutyCycle
 
         public string Name { get; }
         
-        public string CyclingCronExpression { get; }
+        public CronExpression CyclingCronExpression { get; }
 
         public int DutiesCount { get; }
         

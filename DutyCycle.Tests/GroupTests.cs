@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using AutoFixture;
 using AutoFixture.NUnit3;
+using Cronos;
 using DutyCycle.Triggers;
 using Moq;
 using NUnit.Framework;
@@ -14,12 +15,14 @@ namespace DutyCycle.Tests
         public void Setup()
         {
             _fixture = new Fixture();
+            _fixture.Register(() => CronExpression.Parse("* * * * *"));
             _triggersContext = new TriggersContext(Mock.Of<ISlackClient>(), Mock.Of<ISlackMessageTemplater>());
         }
 
-        [Test, AutoData]
-        public void GetGroupWithoutMembersInfo_EmptyCurrentDutiesAndNextDuties(Group group)
+        [Test]
+        public void GetGroupWithoutMembersInfo_EmptyCurrentDutiesAndNextDuties()
         {
+            var group = _fixture.Create<Group>();
             var groupInfo = group.Info;
             
             CollectionAssert.IsEmpty(groupInfo.CurrentDuties);
@@ -29,7 +32,7 @@ namespace DutyCycle.Tests
         [Test]
         public void GetGroupInfoWhenMembersCountIsLessThatDutiesCount_AllMembersAreCurrentDuties()
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 2);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 2);
             var newGroupMemberInfo = _fixture.Create<NewGroupMemberInfo>();
             group.AddMember(newGroupMemberInfo, _triggersContext);
 
@@ -43,7 +46,7 @@ namespace DutyCycle.Tests
         [Test]
         public void GetGroupInfoWhenSomeoneIsNotOnDuty_LeavesHimInNextDuties()
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 1);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
             var onDutyMemberInfo = _fixture.Create<NewGroupMemberInfo>();
             var notOnDutyMemberInfo = _fixture.Create<NewGroupMemberInfo>();
             group.AddMember(onDutyMemberInfo, _triggersContext);
@@ -58,10 +61,9 @@ namespace DutyCycle.Tests
         }
         
         [Test, AutoData]
-        public void AddMemberToEmptyGroup_NoFollowedGroupMemberId(
-            Group group,
-            NewGroupMemberInfo newGroupMemberInfo)
+        public void AddMemberToEmptyGroup_NoFollowedGroupMemberId(NewGroupMemberInfo newGroupMemberInfo)
         {
+            var group = _fixture.Create<Group>();
             group.AddMember(newGroupMemberInfo, _triggersContext);
             var addedMember = group.Members.Single();
 
@@ -71,10 +73,10 @@ namespace DutyCycle.Tests
 
         [Test, AutoData]
         public void AddNewMemberToNonEmptyGroup_MemberFollowsPreviousMember(
-            Group group,
             NewGroupMemberInfo firstGroupMember,
             NewGroupMemberInfo secondGroupMember)
         {
+            var group = _fixture.Create<Group>();
             group.AddMember(firstGroupMember, _triggersContext);
             var firstAddedMemberId = group.Members.Single().Id;
 
@@ -86,8 +88,9 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void AddMemberWithCallback_ExecutesCallback(Group group, NewGroupMemberInfo member)
+        public void AddMemberWithCallback_ExecutesCallback(NewGroupMemberInfo member)
         {
+            var group = _fixture.Create<Group>();
             var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.AddMember);
             group.AddActionTrigger(callbackMock.Object);
 
@@ -97,10 +100,9 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void AddMemberWithCallbackForDifferentAction_DoesNotExecuteCallback(
-            Group group,
-            NewGroupMemberInfo member)
+        public void AddMemberWithCallbackForDifferentAction_DoesNotExecuteCallback(NewGroupMemberInfo member)
         {
+            var group = _fixture.Create<Group>();
             var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
             group.AddActionTrigger(callbackMock.Object);
 
@@ -110,16 +112,19 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesInEmptyGroup_DoesNothing(Group group)
+        public void RotateDutiesInEmptyGroup_DoesNothing()
         {
+            var group = _fixture.Create<Group>();
+            
             group.RotateDuties(_triggersContext);
 
             CollectionAssert.IsEmpty(group.Members);
         }
 
         [Test, AutoData]
-        public void RotateDutiesInEmptyGroup_DoesNotExecuteCallback(Group group)
+        public void RotateDutiesInEmptyGroup_DoesNotExecuteCallback()
         {
+            var group = _fixture.Create<Group>();
             var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
             group.AddActionTrigger(callbackMock.Object);
 
@@ -129,8 +134,9 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesInGroupOfOnePerson_DoesNothing(Group group, NewGroupMemberInfo singleMember)
+        public void RotateDutiesInGroupOfOnePerson_DoesNothing(NewGroupMemberInfo singleMember)
         {
+            var group = _fixture.Create<Group>();
             group.AddMember(singleMember, _triggersContext);
 
             group.RotateDuties(_triggersContext);
@@ -140,10 +146,9 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesInGroupOfOnePerson_DoesNotExecuteCallback(
-            Group group,
-            NewGroupMemberInfo singleMember)
+        public void RotateDutiesInGroupOfOnePerson_DoesNotExecuteCallback(NewGroupMemberInfo singleMember)
         {
+            var group = _fixture.Create<Group>();
             group.AddMember(singleMember, _triggersContext);
             var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
             group.AddActionTrigger(callbackMock.Object);
@@ -158,7 +163,7 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 3);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 3);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
 
@@ -176,7 +181,7 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 4);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 4);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
 
@@ -194,7 +199,7 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 4);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 4);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
             var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
@@ -211,7 +216,7 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo memberToDisposeFromDuty,
             NewGroupMemberInfo memberToRetrieveDutyFirstTime)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 2);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 2);
             group.AddMember(memberToRetrieveDutySecondTime, _triggersContext);
             group.AddMember(memberToDisposeFromDuty, _triggersContext);
             group.AddMember(memberToRetrieveDutyFirstTime, _triggersContext);
@@ -232,7 +237,7 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo memberToPassDuty,
             NewGroupMemberInfo memberToRetrieveDuty)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 1);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
             group.AddMember(memberToPassDuty, _triggersContext);
             group.AddMember(memberToRetrieveDuty, _triggersContext);
 
@@ -247,7 +252,7 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo memberToPassDuty,
             NewGroupMemberInfo memberToRetrieveDuty)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<string>(), dutiesCount: 1);
+            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
             group.AddMember(memberToPassDuty, _triggersContext);
             group.AddMember(memberToRetrieveDuty, _triggersContext);
             var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
@@ -257,7 +262,7 @@ namespace DutyCycle.Tests
 
             callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Once);
         }
-
+        
         private Fixture _fixture;
         private TriggersContext _triggersContext;
     }

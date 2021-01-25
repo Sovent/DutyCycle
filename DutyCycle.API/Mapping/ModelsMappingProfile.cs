@@ -1,5 +1,7 @@
 using AutoMapper;
+using Cronos;
 using DutyCycle.API.Models;
+using DutyCycle.Common;
 
 namespace DutyCycle.API.Mapping
 {
@@ -15,8 +17,12 @@ namespace DutyCycle.API.Mapping
 
             CreateMap<Triggers.GroupActionTrigger, Models.GroupActionTrigger>().IncludeAllDerived();
             CreateMap<Triggers.SendSlackMessageTrigger, Models.SendSlackMessageTrigger>();
-            
-            CreateMap<GroupInfo, Models.Group>();
+
+            CreateMap<GroupInfo, Models.Group>()
+                .ForMember(
+                    model => model.CyclingCronExpression,
+                    configuration => configuration.MapFrom(
+                        groupInfo => groupInfo.CyclingCronExpression.ToString(CronFormat.Standard)));
         }
     }
 }

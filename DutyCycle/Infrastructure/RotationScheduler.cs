@@ -15,7 +15,7 @@ namespace DutyCycle.Infrastructure
             _recurringJobManager.AddOrUpdate<IGroupService>(
                 GetJobId(groupInfo),
                 service => service.RotateDutiesInGroup(groupInfo.Id), 
-                groupInfo.CyclingCronExpression);
+                groupInfo.CyclingCronExpression.ToString());
         }
 
         private static string GetJobId(GroupInfo groupInfo)

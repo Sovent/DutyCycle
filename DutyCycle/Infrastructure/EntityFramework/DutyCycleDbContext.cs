@@ -1,4 +1,6 @@
+using Cronos;
 using DutyCycle.Triggers;
+using DutyCycle.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace DutyCycle.Infrastructure.EntityFramework
@@ -17,6 +19,11 @@ namespace DutyCycle.Infrastructure.EntityFramework
             {
                 builder.HasKey(group => group.Id);
                 builder.HasMany<GroupMember>("_groupMembers").WithOne();
+                builder
+                    .Property(group => group.CyclingCronExpression)
+                    .HasConversion(
+                        cron => cron.ToString(CronFormat.Standard),
+                        expressionString => CronExpression.Parse(expressionString));
                 builder.Ignore(group => group.Members);
                 builder.Ignore(group => group.Info);
                 builder.HasMany<GroupActionTrigger>("_triggers").WithOne();

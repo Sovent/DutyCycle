@@ -1,17 +1,11 @@
 using System;
+using Cronos;
 using DutyCycle.Errors;
 
 namespace DutyCycle
 {
     public class GroupSettingsValidator : IGroupSettingsValidator
     {
-        private readonly ICronValidator _cronValidator;
-
-        public GroupSettingsValidator(ICronValidator cronValidator)
-        {
-            _cronValidator = cronValidator ?? throw new ArgumentNullException(nameof(cronValidator));
-        }
-        
         public void Validate(GroupSettings groupSettings)
         {
             if (groupSettings == null) throw new ArgumentNullException(nameof(groupSettings));
@@ -22,7 +16,7 @@ namespace DutyCycle
                 throw new InvalidGroupSettings("Group name must not be empty", now).ToException();
             }
             
-            if (_cronValidator.IsValidCron(groupSettings.CyclingCronExpression))
+            if (!IsValidCron(groupSettings.CyclingCronExpression))
             {
                 throw new InvalidGroupSettings("Cron expression for group is in incorrect format", now).ToException();
             }
@@ -30,6 +24,19 @@ namespace DutyCycle
             if (groupSettings.DutiesCount < 1)
             {
                 throw new InvalidGroupSettings("Group must have at least 1 duty", now).ToException();
+            }
+        }
+
+        private bool IsValidCron(string cronExpression)
+        {
+            try
+            {
+                CronExpression.Parse(cronExpression);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

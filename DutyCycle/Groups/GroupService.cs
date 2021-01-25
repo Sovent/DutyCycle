@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cronos;
 using DutyCycle.Triggers;
 using LanguageExt;
 
@@ -39,8 +40,12 @@ namespace DutyCycle
             if (groupSettings == null) throw new ArgumentNullException(nameof(groupSettings));
             
             _groupSettingsValidator.Validate(groupSettings);
+
+            var group = new Group(
+                groupSettings.Name, 
+                CronExpression.Parse(groupSettings.CyclingCronExpression),
+                groupSettings.DutiesCount);
             
-            var group = new Group(groupSettings.Name, groupSettings.CyclingCronExpression, groupSettings.DutiesCount);
             await _repository.Save(group);
             
             _rotationScheduler.ScheduleOrRescheduleForAGroup(group.Info);

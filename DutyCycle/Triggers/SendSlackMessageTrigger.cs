@@ -22,7 +22,11 @@ namespace DutyCycle.Triggers
             if (triggersContext == null) throw new ArgumentNullException(nameof(triggersContext));
             
             var slackClient = triggersContext.SlackClient;
-            var messageText = triggersContext.SlackMessageTemplater.CreateFromTemplate(MessageTextTemplate, group);
+            var messageText =
+                triggersContext.SlackMessageTemplater.CreateFromTemplate(
+                    MessageTextTemplate,
+                    group,
+                    DateTimeOffset.UtcNow);
             await slackClient.SendMessageToChannel(ChannelId, messageText);
         }
     }
