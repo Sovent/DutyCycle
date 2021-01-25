@@ -45,6 +45,7 @@ namespace DutyCycle.API
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddSingleton<ISlackClient, SlackClient>();
+            services.AddSingleton<ISlackMessageTemplater, SlackMessageTemplater>();
             services.AddSingleton<TriggersContext>();
             services.AddSingleton<ICronValidator, CronValidator>();
             services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();

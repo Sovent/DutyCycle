@@ -35,6 +35,8 @@ namespace DutyCycle
         public IReadOnlyCollection<GroupMemberInfo> CurrentDuties { get; }
         
         public IReadOnlyCollection<GroupMemberInfo> NextDuties { get; }
+
+        public IReadOnlyCollection<GroupMemberInfo> AllMembers => CurrentDuties.Concat(NextDuties).ToArray();
         
         // todo: introduce views for triggers to avoid trigger being ran outside of group
         public IReadOnlyCollection<GroupActionTrigger> Triggers { get; }

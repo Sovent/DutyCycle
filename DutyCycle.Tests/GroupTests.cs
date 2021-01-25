@@ -14,7 +14,7 @@ namespace DutyCycle.Tests
         public void Setup()
         {
             _fixture = new Fixture();
-            _triggersContext = new TriggersContext(Mock.Of<ISlackClient>());
+            _triggersContext = new TriggersContext(Mock.Of<ISlackClient>(), Mock.Of<ISlackMessageTemplater>());
         }
 
         [Test, AutoData]

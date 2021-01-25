@@ -22,14 +22,8 @@ namespace DutyCycle.Triggers
             if (triggersContext == null) throw new ArgumentNullException(nameof(triggersContext));
             
             var slackClient = triggersContext.SlackClient;
-            var messageText = FillTemplate(group);
+            var messageText = triggersContext.SlackMessageTemplater.CreateFromTemplate(MessageTextTemplate, group);
             await slackClient.SendMessageToChannel(ChannelId, messageText);
-        }
-
-        private string FillTemplate(GroupInfo group)
-        {
-            // todo: implement templater
-            return MessageTextTemplate;
         }
     }
 }
