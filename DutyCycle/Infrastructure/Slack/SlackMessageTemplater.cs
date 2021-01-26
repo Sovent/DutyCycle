@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using DutyCycle.Triggers;
 
-namespace DutyCycle.Infrastructure
+namespace DutyCycle.Infrastructure.Slack
 {
     public class SlackMessageTemplater : ISlackMessageTemplater
     {

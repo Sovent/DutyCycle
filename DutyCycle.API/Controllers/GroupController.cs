@@ -17,14 +17,11 @@ namespace DutyCycle.API.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> TryGet([FromRoute]int groupId)
+        public async Task<IActionResult> Get([FromRoute]int groupId)
         {
-            var group = await _groupService.TryGetGroup(groupId);
-            return group
-                .Map(_mapper.Map<Models.Group>)
-                .Match(
-                    groupModel => (IActionResult) Ok(groupModel), 
-                    NotFound);
+            var group = await _groupService.GetGroup(groupId);
+            var groupModel = _mapper.Map<Models.Group>(group);
+            return Ok(groupModel);
         }
 
         [HttpPost]
