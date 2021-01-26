@@ -23,10 +23,10 @@ namespace DutyCycle
             _triggersContext = triggersContext ?? throw new ArgumentNullException(nameof(triggersContext));
         }
         
-        public async Task<Option<GroupInfo>> TryGetGroup(int groupId)
+        public async Task<GroupInfo> GetGroup(int groupId)
         {
-            var group = await _repository.TryGet(groupId);
-            return group.Map(g => g.Info);
+            var group = await _repository.Get(groupId);
+            return group.Info;
         }
 
         public async Task<IReadOnlyCollection<GroupInfo>> GetAllGroups()

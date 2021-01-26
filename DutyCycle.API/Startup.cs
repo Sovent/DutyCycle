@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
 using AutoMapper;
+using DutyCycle.API.Filters;
 using DutyCycle.API.Mapping;
 using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
+using DutyCycle.Infrastructure.Slack;
 using DutyCycle.Triggers;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -13,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SlackAPI;
-using SlackClient = DutyCycle.Infrastructure.SlackClient;
+using SlackClient = DutyCycle.Infrastructure.Slack.SlackClient;
 
 namespace DutyCycle.API
 {
@@ -30,12 +32,14 @@ namespace DutyCycle.API
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration["ConnectionString"];
-            
-            services.AddControllers().AddJsonOptions(options =>
-            {
-                var serializerOptions = options.JsonSerializerOptions;
-                serializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+
+            services
+                .AddControllers(options => options.Filters.Add<DomainExceptionFilter>())
+                .AddJsonOptions(options =>
+                {
+                    var serializerOptions = options.JsonSerializerOptions;
+                    serializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddAutoMapper(configuration =>
             {

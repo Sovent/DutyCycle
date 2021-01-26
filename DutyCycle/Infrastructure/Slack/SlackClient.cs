@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using DutyCycle.Errors;
 using DutyCycle.Triggers;
 using SlackAPI;
 
-namespace DutyCycle.Infrastructure
+namespace DutyCycle.Infrastructure.Slack
 {
     public class SlackClient : ISlackClient
     {
@@ -18,8 +19,21 @@ namespace DutyCycle.Infrastructure
         {
             if (channelId == null) throw new ArgumentNullException(nameof(channelId));
             if (message == null) throw new ArgumentNullException(nameof(message));
+
+            PostMessageResponse response;
+            try
+            {
+                response = await _slackTaskClient.PostMessageAsync(channelId, message);
+            }
+            catch (Exception exception)
+            {
+                throw new SlackInteractionFailed(exception.Message, DateTimeOffset.Now).ToException();
+            }
             
-            await _slackTaskClient.PostMessageAsync(channelId, message);
+            if (!response.ok)
+            {
+                throw new SlackInteractionFailed(response.error, DateTimeOffset.Now).ToException();
+            }
         }
 
         public async Task AddUserToGroup(string memberId, string groupId)
