@@ -1,6 +1,6 @@
 namespace DutyCycle.API.Models
 {
-    public class SendSlackMessageTrigger : GroupActionTrigger
+    public class SendSlackMessageTrigger : RotationChangedTrigger
     {
         public string ChannelId { get; set; }
         

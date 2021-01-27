@@ -16,6 +16,6 @@ namespace DutyCycle.API.Models
         
         public IReadOnlyCollection<GroupMember> NextDuties { get; set; }
         
-        public IReadOnlyCollection<GroupActionTrigger> Triggers { get; set; }
+        public IReadOnlyCollection<RotationChangedTrigger> Triggers { get; set; }
     }
 }

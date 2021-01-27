@@ -3,17 +3,14 @@ using System.Threading.Tasks;
 
 namespace DutyCycle.Triggers
 {
-    public abstract class GroupActionTrigger
+    public abstract class RotationChangedTrigger
     {
-        protected GroupActionTrigger(Guid id, GroupAction action)
+        protected RotationChangedTrigger(Guid id)
         {
             Id = id;
-            Action = action;
         }
 
         public Guid Id { get; private set; }
-        
-        public GroupAction Action { get; private set; }
         
         public abstract Task Run(GroupInfo group, TriggersContext triggersContext);
     }

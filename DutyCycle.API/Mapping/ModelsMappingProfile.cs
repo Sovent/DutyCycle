@@ -12,10 +12,10 @@ namespace DutyCycle.API.Mapping
             CreateMap<CreateGroupRequest, GroupSettings>();
             CreateMap<GroupMemberInfo, Models.GroupMember>();
 
-            CreateMap<Models.GroupActionTrigger, Triggers.GroupActionTrigger>().IncludeAllDerived();
+            CreateMap<Models.RotationChangedTrigger, Triggers.RotationChangedTrigger>().IncludeAllDerived();
             CreateMap<Models.SendSlackMessageTrigger, Triggers.SendSlackMessageTrigger>();
 
-            CreateMap<Triggers.GroupActionTrigger, Models.GroupActionTrigger>().IncludeAllDerived();
+            CreateMap<Triggers.RotationChangedTrigger, Models.RotationChangedTrigger>().IncludeAllDerived();
             CreateMap<Triggers.SendSlackMessageTrigger, Models.SendSlackMessageTrigger>();
 
             CreateMap<GroupInfo, Models.Group>()

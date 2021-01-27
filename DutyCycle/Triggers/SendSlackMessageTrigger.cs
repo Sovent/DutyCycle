@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace DutyCycle.Triggers
 {
-    public class SendSlackMessageTrigger : GroupActionTrigger
+    public class SendSlackMessageTrigger : RotationChangedTrigger
     {
-        public SendSlackMessageTrigger(Guid id, GroupAction action, string channelId, string messageTextTemplate) 
-            : base(id, action)
+        public SendSlackMessageTrigger(Guid id, string channelId, string messageTextTemplate) 
+            : base(id)
         {
             ChannelId = channelId;
             MessageTextTemplate = messageTextTemplate;

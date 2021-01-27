@@ -39,8 +39,8 @@ namespace DutyCycle.API.Controllers
             [FromRoute] int groupId,
             [FromBody] SendSlackMessageTrigger request) // todo: polymorphic deserialization of add trigger
         {
-            var callback = _mapper.Map<Triggers.GroupActionTrigger>(request);
-            await _groupService.AddCallback(groupId, callback);
+            var callback = _mapper.Map<Triggers.RotationChangedTrigger>(request);
+            await _groupService.AddTriggerOnRotationChange(groupId, callback);
             return Ok();
         }
 
@@ -48,7 +48,7 @@ namespace DutyCycle.API.Controllers
         [Route("callbacks/{callbackId}")]
         public async Task<IActionResult> RemoveCallback([FromRoute] int groupId, [FromRoute] Guid callbackId)
         {
-            await _groupService.RemoveCallback(groupId, callbackId);
+            await _groupService.RemoveTrigger(groupId, callbackId);
             return Ok();
         }
         

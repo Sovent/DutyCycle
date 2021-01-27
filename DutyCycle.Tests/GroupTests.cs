@@ -91,24 +91,24 @@ namespace DutyCycle.Tests
         public void AddMemberWithCallback_ExecutesCallback(NewGroupMemberInfo member)
         {
             var group = _fixture.Create<Group>();
-            var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.AddMember);
-            group.AddActionTrigger(callbackMock.Object);
+            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
+            group.AddRotationChangedTrigger(triggerMock.Object);
 
             group.AddMember(member, _triggersContext);
 
-            callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Once);
+            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Once);
         }
 
         [Test, AutoData]
         public void AddMemberWithCallbackForDifferentAction_DoesNotExecuteCallback(NewGroupMemberInfo member)
         {
             var group = _fixture.Create<Group>();
-            var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
-            group.AddActionTrigger(callbackMock.Object);
+            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
+            group.AddRotationChangedTrigger(triggerMock.Object);
 
             group.AddMember(member, _triggersContext);
 
-            callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Never);
+            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Never);
         }
 
         [Test, AutoData]
@@ -125,12 +125,12 @@ namespace DutyCycle.Tests
         public void RotateDutiesInEmptyGroup_DoesNotExecuteCallback()
         {
             var group = _fixture.Create<Group>();
-            var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
-            group.AddActionTrigger(callbackMock.Object);
+            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
+            group.AddRotationChangedTrigger(triggerMock.Object);
 
             group.RotateDuties(_triggersContext);
 
-            callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), It.IsAny<TriggersContext>()), Times.Never);
+            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), It.IsAny<TriggersContext>()), Times.Never);
         }
 
         [Test, AutoData]
@@ -150,12 +150,12 @@ namespace DutyCycle.Tests
         {
             var group = _fixture.Create<Group>();
             group.AddMember(singleMember, _triggersContext);
-            var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
-            group.AddActionTrigger(callbackMock.Object);
+            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
+            group.AddRotationChangedTrigger(triggerMock.Object);
 
             group.RotateDuties(_triggersContext);
 
-            callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), It.IsAny<TriggersContext>()), Times.Never);
+            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), It.IsAny<TriggersContext>()), Times.Never);
         }
 
         [Test, AutoData]
@@ -202,12 +202,12 @@ namespace DutyCycle.Tests
             var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 4);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
-            var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
-            group.AddActionTrigger(callbackMock.Object);
+            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
+            group.AddRotationChangedTrigger(triggerMock.Object);
 
             group.RotateDuties(_triggersContext);
 
-            callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), It.IsAny<TriggersContext>()), Times.Never);
+            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), It.IsAny<TriggersContext>()), Times.Never);
         }
 
         [Test, AutoData]
@@ -255,12 +255,12 @@ namespace DutyCycle.Tests
             var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
             group.AddMember(memberToPassDuty, _triggersContext);
             group.AddMember(memberToRetrieveDuty, _triggersContext);
-            var callbackMock = new Mock<GroupActionTrigger>(Guid.NewGuid(), GroupAction.RotateDuties);
-            group.AddActionTrigger(callbackMock.Object);
+            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
+            group.AddRotationChangedTrigger(triggerMock.Object);
 
             group.RotateDuties(_triggersContext);
 
-            callbackMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Once);
+            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Once);
         }
         
         private Fixture _fixture;

@@ -14,7 +14,7 @@ namespace DutyCycle
             int dutiesCount,
             IReadOnlyCollection<GroupMemberInfo> currentDuties,
             IReadOnlyCollection<GroupMemberInfo> nextDuties,
-            IReadOnlyCollection<GroupActionTrigger> triggers)
+            IReadOnlyCollection<RotationChangedTrigger> triggers)
         {
             Id = id;
             Name = name;
@@ -40,6 +40,6 @@ namespace DutyCycle
         public IReadOnlyCollection<GroupMemberInfo> AllMembers => CurrentDuties.Concat(NextDuties).ToArray();
         
         // todo: introduce views for triggers to avoid trigger being ran outside of group
-        public IReadOnlyCollection<GroupActionTrigger> Triggers { get; }
+        public IReadOnlyCollection<RotationChangedTrigger> Triggers { get; }
     }
 }

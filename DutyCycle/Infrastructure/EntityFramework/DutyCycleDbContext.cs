@@ -26,7 +26,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
                         expressionString => CronExpression.Parse(expressionString));
                 builder.Ignore(group => group.Members);
                 builder.Ignore(group => group.Info);
-                builder.HasMany<GroupActionTrigger>("_triggers").WithOne();
+                builder.HasMany<RotationChangedTrigger>("_triggers").WithOne();
             });
 
             modelBuilder.Entity<GroupMember>(builder =>
@@ -40,7 +40,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
                     .IsRequired(false);
             });
 
-            modelBuilder.Entity<GroupActionTrigger>(builder =>
+            modelBuilder.Entity<RotationChangedTrigger>(builder =>
             {
                 builder.HasKey(trigger => trigger.Id);
                 builder.Property(trigger => trigger.Id).ValueGeneratedNever();

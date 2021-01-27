@@ -76,7 +76,7 @@ namespace DutyCycle
             newFirst.FollowedGroupMemberId = null;
             currentFirst.FollowedGroupMemberId = currentTail.Id;
 
-            await RunTriggers(GroupAction.RotateDuties, triggersContext);
+            await RunTriggers(triggersContext);
         }
 
         public async Task AddMember(NewGroupMemberInfo newGroupMemberInfo, TriggersContext triggersContext)
@@ -85,10 +85,10 @@ namespace DutyCycle
             var newGroupMember = new GroupMember(Guid.NewGuid(), newGroupMemberInfo.Name, lastMemberId);
             _groupMembers.Add(newGroupMember);
 
-            await RunTriggers(GroupAction.AddMember, triggersContext);
+            await RunTriggers(triggersContext);
         }
 
-        public void AddActionTrigger(GroupActionTrigger trigger)
+        public void AddRotationChangedTrigger(RotationChangedTrigger trigger)
         {
             _triggers.Add(trigger);
         }
@@ -98,16 +98,14 @@ namespace DutyCycle
             _triggers.RemoveAll(trigger => trigger.Id == triggerId);
         }
 
-        private async Task RunTriggers(GroupAction action, TriggersContext triggersContext)
+        private async Task RunTriggers(TriggersContext triggersContext)
         {
-            var triggersToRun = _triggers
-                .Where(actionTrigger => actionTrigger.Action == action)
-                .Select(trigger => trigger.Run(Info, triggersContext));
+            var triggersToRun = _triggers.Select(trigger => trigger.Run(Info, triggersContext));
 
             await Task.WhenAll(triggersToRun);
         }
 
-        private List<GroupActionTrigger> _triggers = new List<GroupActionTrigger>();
+        private List<RotationChangedTrigger> _triggers = new List<RotationChangedTrigger>();
         private List<GroupMember> _groupMembers = new List<GroupMember>();
     }
 }

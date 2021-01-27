@@ -62,16 +62,16 @@ namespace DutyCycle
             await _repository.Save(group);
         }
 
-        public async Task AddCallback(int groupId, GroupActionTrigger trigger)
+        public async Task AddTriggerOnRotationChange(int groupId, RotationChangedTrigger trigger)
         {
             if (trigger == null) throw new ArgumentNullException(nameof(trigger));
             
             var group = await _repository.Get(groupId);
-            group.AddActionTrigger(trigger);
+            group.AddRotationChangedTrigger(trigger);
             await _repository.Save(group);
         }
 
-        public async Task RemoveCallback(int groupId, Guid callbackId)
+        public async Task RemoveTrigger(int groupId, Guid callbackId)
         {
             var group = await _repository.Get(groupId);
             group.RemoveActionCallback(callbackId);
