@@ -26,7 +26,7 @@ namespace DutyCycle.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateGroupRequest request)
+        public async Task<IActionResult> Create(Models.GroupSettings request)
         {
             var groupSettings = _mapper.Map<GroupSettings>(request);
             var group = await _groupService.CreateGroup(groupSettings);

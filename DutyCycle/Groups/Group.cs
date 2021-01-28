@@ -54,6 +54,17 @@ namespace DutyCycle
             }
         }
 
+        public async Task ChangeSettings(GroupSettings groupSettings, TriggersContext triggersContext)
+        {
+            Name = groupSettings.Name;
+            CyclingCronExpression = CronExpression.Parse(groupSettings.CyclingCronExpression);
+            if (DutiesCount != groupSettings.DutiesCount)
+            {
+                DutiesCount = groupSettings.DutiesCount;
+                await NotifyAboutRotationChange(triggersContext);
+            }
+        }
+        
         public async Task RotateDuties(TriggersContext triggersContext)
         {
             var groupMembersCount = _groupMembers.Count;
@@ -76,7 +87,7 @@ namespace DutyCycle
             newFirst.FollowedGroupMemberId = null;
             currentFirst.FollowedGroupMemberId = currentTail.Id;
 
-            await RunTriggers(triggersContext);
+            await NotifyAboutRotationChange(triggersContext);
         }
 
         public async Task AddMember(NewGroupMemberInfo newGroupMemberInfo, TriggersContext triggersContext)
@@ -85,7 +96,7 @@ namespace DutyCycle
             var newGroupMember = new GroupMember(Guid.NewGuid(), newGroupMemberInfo.Name, lastMemberId);
             _groupMembers.Add(newGroupMember);
 
-            await RunTriggers(triggersContext);
+            await NotifyAboutRotationChange(triggersContext);
         }
 
         public void AddRotationChangedTrigger(RotationChangedTrigger trigger)
@@ -98,7 +109,7 @@ namespace DutyCycle
             _triggers.RemoveAll(trigger => trigger.Id == triggerId);
         }
 
-        private async Task RunTriggers(TriggersContext triggersContext)
+        private async Task NotifyAboutRotationChange(TriggersContext triggersContext)
         {
             var triggersToRun = _triggers.Select(trigger => trigger.Run(Info, triggersContext));
 

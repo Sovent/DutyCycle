@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cronos;
 using DutyCycle.Triggers;
-using LanguageExt;
 
 namespace DutyCycle
 {
@@ -51,6 +50,19 @@ namespace DutyCycle
             _rotationScheduler.ScheduleOrRescheduleForAGroup(group.Info);
             
             return group;
+        }
+
+        public async Task EditGroup(int groupId, GroupSettings groupSettings)
+        {
+            if (groupSettings == null) throw new ArgumentNullException(nameof(groupSettings));
+
+            var group = await _repository.Get(groupId);
+            
+            _groupSettingsValidator.Validate(groupSettings);
+
+            await group.ChangeSettings(groupSettings, _triggersContext);
+
+            await _repository.Save(group);
         }
 
         public async Task AddMemberToGroup(int groupId, NewGroupMemberInfo newGroupMemberInfo)

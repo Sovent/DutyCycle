@@ -24,9 +24,19 @@ namespace DutyCycle.API.Controllers
             return Ok(groupModel);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> ChangeGroupSettings(
+            [FromRoute] int groupId,
+            [FromBody] Models.GroupSettings request)
+        {
+            var groupSettings = _mapper.Map<GroupSettings>(request);
+            await _groupService.EditGroup(groupId, groupSettings);
+            return Ok();
+        }
+
         [HttpPost]
         [Route("members")]
-        public async Task<IActionResult> AddMember([FromRoute]int groupId, [FromBody]AddMemberRequest request)
+        public async Task<IActionResult> AddMember([FromRoute]int groupId, [FromBody]NewMemberInfo request)
         {
             var groupMemberInfo = new NewGroupMemberInfo(request.Name);
             await _groupService.AddMemberToGroup(groupId, groupMemberInfo);

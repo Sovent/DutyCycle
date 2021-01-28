@@ -1,6 +1,6 @@
 namespace DutyCycle.API.Models
 {
-    public class AddMemberRequest
+    public class NewMemberInfo
     {
         public string Name { get; set; }
     }

@@ -9,7 +9,7 @@ namespace DutyCycle.API.Mapping
     {
         public ModelsMappingProfile()
         {
-            CreateMap<CreateGroupRequest, GroupSettings>();
+            CreateMap<Models.GroupSettings, GroupSettings>();
             CreateMap<GroupMemberInfo, Models.GroupMember>();
 
             CreateMap<Models.RotationChangedTrigger, Triggers.RotationChangedTrigger>().IncludeAllDerived();

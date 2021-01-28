@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DutyCycle.Triggers;
-using LanguageExt;
 
 namespace DutyCycle
 {
@@ -12,6 +11,7 @@ namespace DutyCycle
         Task<IReadOnlyCollection<GroupInfo>> GetAllGroups();
 
         Task<Group> CreateGroup(GroupSettings groupSettings);
+        Task EditGroup(int groupId, GroupSettings groupSettings);
         Task AddMemberToGroup(int groupId, NewGroupMemberInfo newGroupMemberInfo);
 
         Task AddTriggerOnRotationChange(int groupId, RotationChangedTrigger trigger);
