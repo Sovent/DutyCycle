@@ -4,5 +4,7 @@
     &lt;TestId&gt;NUnit3x::68248CCE-4ECB-4652-BA5B-564A915464B8::.NETCoreApp,Version=v3.1::DutyCycle.Tests.GroupTests&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::68248CCE-4ECB-4652-BA5B-564A915464B8::.NETCoreApp,Version=v3.1::DutyCycle.Tests.MembersOrdererTests.OrderUnorderedMembers_Success&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::68248CCE-4ECB-4652-BA5B-564A915464B8::.NETCoreApp,Version=v3.1::DutyCycle.Tests.MembersOrdererTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.GroupScenarioTests.CreateGroup_ShouldAppearInGroupsList&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.GroupScenarioTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

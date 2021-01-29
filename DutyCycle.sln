@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DutyCycle", "DutyCycle\Duty
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DutyCycle.Tests", "DutyCycle.Tests\DutyCycle.Tests.csproj", "{68248CCE-4ECB-4652-BA5B-564A915464B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DutyCycle.IntegrationTests", "DutyCycle.IntegrationTests\DutyCycle.IntegrationTests.csproj", "{5A8E8FCA-3B99-4988-884A-67296BD4BFAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{68248CCE-4ECB-4652-BA5B-564A915464B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68248CCE-4ECB-4652-BA5B-564A915464B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68248CCE-4ECB-4652-BA5B-564A915464B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A8E8FCA-3B99-4988-884A-67296BD4BFAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A8E8FCA-3B99-4988-884A-67296BD4BFAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A8E8FCA-3B99-4988-884A-67296BD4BFAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A8E8FCA-3B99-4988-884A-67296BD4BFAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
