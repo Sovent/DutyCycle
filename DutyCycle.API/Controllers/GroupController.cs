@@ -47,7 +47,7 @@ namespace DutyCycle.API.Controllers
         [Route("callbacks")]
         public async Task<IActionResult> AddCallback(
             [FromRoute] int groupId,
-            [FromBody] SendSlackMessageTrigger request) // todo: polymorphic deserialization of add trigger
+            [FromBody] RotationChangedTrigger request)
         {
             var callback = _mapper.Map<Triggers.RotationChangedTrigger>(request);
             await _groupService.AddTriggerOnRotationChange(groupId, callback);

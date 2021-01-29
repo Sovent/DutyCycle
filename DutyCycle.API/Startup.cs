@@ -4,6 +4,7 @@ using DutyCycle.API.Filters;
 using DutyCycle.API.Mapping;
 using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
+using DutyCycle.Infrastructure.Json;
 using DutyCycle.Infrastructure.Slack;
 using DutyCycle.Triggers;
 using Hangfire;
@@ -39,6 +40,8 @@ namespace DutyCycle.API
                 {
                     var serializerOptions = options.JsonSerializerOptions;
                     serializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    serializerOptions.Converters.Add(
+                        new TypeDiscriminatorJsonConverter<Models.RotationChangedTrigger>());
                 });
 
             services.AddAutoMapper(configuration =>
