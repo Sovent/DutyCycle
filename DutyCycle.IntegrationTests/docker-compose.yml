@@ -1,0 +1,14 @@
+version: '3'
+services:
+  db:
+    image: 'postgres'
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+  tests:    
+    build:
+      context: ../
+      dockerfile: DutyCycle.IntegrationTests/Dockerfile
+    depends_on:
+      - db
+    environment:
+      ConnectionString: Host=db;Database=postgres;Username=postgres;Password=postgres_password
