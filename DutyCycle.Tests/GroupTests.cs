@@ -88,7 +88,7 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void AddMemberWithCallback_ExecutesCallback(NewGroupMemberInfo member)
+        public void AddMemberWithTrigger_ExecutesTrigger(NewGroupMemberInfo member)
         {
             var group = _fixture.Create<Group>();
             var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
@@ -97,18 +97,6 @@ namespace DutyCycle.Tests
             group.AddMember(member, _triggersContext);
 
             triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Once);
-        }
-
-        [Test, AutoData]
-        public void AddMemberWithCallbackForDifferentAction_DoesNotExecuteCallback(NewGroupMemberInfo member)
-        {
-            var group = _fixture.Create<Group>();
-            var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
-            group.AddRotationChangedTrigger(triggerMock.Object);
-
-            group.AddMember(member, _triggersContext);
-
-            triggerMock.Verify(mock => mock.Run(It.IsAny<GroupInfo>(), _triggersContext), Times.Never);
         }
 
         [Test, AutoData]
@@ -122,7 +110,7 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesInEmptyGroup_DoesNotExecuteCallback()
+        public void RotateDutiesInEmptyGroup_DoesNotExecuteTrigger()
         {
             var group = _fixture.Create<Group>();
             var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
@@ -146,7 +134,7 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesInGroupOfOnePerson_DoesNotExecuteCallback(NewGroupMemberInfo singleMember)
+        public void RotateDutiesInGroupOfOnePerson_DoesNotExecuteTrigger(NewGroupMemberInfo singleMember)
         {
             var group = _fixture.Create<Group>();
             group.AddMember(singleMember, _triggersContext);
@@ -195,7 +183,7 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesIntoSameRotation_DoesNotExecuteCallback(
+        public void RotateDutiesIntoSameRotation_DoesNotExecuteTrigger(
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
@@ -248,7 +236,7 @@ namespace DutyCycle.Tests
         }
 
         [Test, AutoData]
-        public void RotateDutiesWithActualChanges_ExecutesCallback(
+        public void RotateDutiesWithActualChanges_ExecutesTrigger(
             NewGroupMemberInfo memberToPassDuty,
             NewGroupMemberInfo memberToRetrieveDuty)
         {
