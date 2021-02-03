@@ -1,12 +1,9 @@
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using DutyCycle.API.Models;
-using DutyCycle.Infrastructure.Json;
 using NUnit.Framework;
 
 using GroupModel = DutyCycle.API.Models.Group;
@@ -14,44 +11,17 @@ using GroupModel = DutyCycle.API.Models.Group;
 namespace DutyCycle.IntegrationTests
 {
     [TestFixture]
-    public class GroupScenarioTests
+    public class GroupScenarioTests : IntegrationTests
     {
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            _factory = new ApiWebApplicationFactory();
-            _httpClient = _factory.CreateClient();
-            _jsonSerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true, 
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            _jsonSerializerOptions.Converters.Add(
-                new TypeDiscriminatorJsonConverter<RotationChangedTrigger>());
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            _fixture = new Fixture();
-        }
-        
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            _factory.Dispose();
-            _httpClient.Dispose();
-        }
-
         [Test]
         public async Task CreateGroup_ShouldAppearInGroupsList()
         {
-            var name = _fixture.Create<string>();
+            var name = Fixture.Create<string>();
             var cronExpression = "15 * * * *";
             var dutiesCount = 2;
             
             var createdGroupId = await CreateGroupAndGetId(name, cronExpression, dutiesCount);
-            var groups = await _httpClient.GetFromJsonAsync<GroupModel[]>("/groups", _jsonSerializerOptions);
+            var groups = await GetAllGroups();
             var createdGroup = groups.Single(group => group.Id == createdGroupId);
             
             Assert.AreEqual(name, createdGroup.Name);
@@ -65,12 +35,12 @@ namespace DutyCycle.IntegrationTests
             var groupToEditId = await CreateGroupAndGetId();
             var newGroupSettings = new API.Models.GroupSettings()
             {
-                Name = _fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
                 CyclingCronExpression = "15 5 5 1 0",
                 DutiesCount = 10
             };
 
-            var editGroupResponse = await _httpClient.PutAsJsonAsync("/groups/" + groupToEditId, newGroupSettings);
+            var editGroupResponse = await HttpClient.PutAsJsonAsync("/groups/" + groupToEditId, newGroupSettings);
             Assert.AreEqual(HttpStatusCode.OK, editGroupResponse.StatusCode);
 
             var editedGroup = await GetGroup(groupToEditId);
@@ -84,9 +54,9 @@ namespace DutyCycle.IntegrationTests
         {
             var groupToChangeTriggersId = await CreateGroupAndGetId();
 
-            var sendSlackMessageTrigger = _fixture.Create<SendSlackMessageTrigger>();
+            var sendSlackMessageTrigger = Fixture.Create<SendSlackMessageTrigger>();
 
-            var addTriggerResponse = await _httpClient.PostAsJsonAsync(
+            var addTriggerResponse = await HttpClient.PostAsJsonAsync(
                 $"/groups/{groupToChangeTriggersId}/triggers",
                 sendSlackMessageTrigger);
             Assert.AreEqual(HttpStatusCode.OK, addTriggerResponse.StatusCode);
@@ -98,7 +68,7 @@ namespace DutyCycle.IntegrationTests
             Assert.AreEqual(sendSlackMessageTrigger.MessageTextTemplate, addedTrigger.MessageTextTemplate);
 
             var removeTriggerResponse =
-                await _httpClient.DeleteAsync(
+                await HttpClient.DeleteAsync(
                     $"/groups/{groupToChangeTriggersId}/triggers/{sendSlackMessageTrigger.Id}");
             Assert.AreEqual(HttpStatusCode.OK, removeTriggerResponse.StatusCode);
 
@@ -110,7 +80,7 @@ namespace DutyCycle.IntegrationTests
         public async Task AddMemberToGroup_MemberShouldAppearWithinGroupMembers()
         {
             var groupToAddMemberId = await CreateGroupAndGetId();
-            var memberName = _fixture.Create<string>();
+            var memberName = Fixture.Create<string>();
 
             await AddMember(groupToAddMemberId, memberName);
 
@@ -122,8 +92,8 @@ namespace DutyCycle.IntegrationTests
         [Test]
         public async Task ForceRotationInGroup_CurrentAndNextDutiesChanged()
         {
-            var firstMemberName = _fixture.Create<string>();
-            var secondMemberName = _fixture.Create<string>();
+            var firstMemberName = Fixture.Create<string>();
+            var secondMemberName = Fixture.Create<string>();
             var groupToForceRotationInId = await CreateGroupAndGetId(dutiesCount: 1);
             await AddMember(groupToForceRotationInId, firstMemberName);
             await AddMember(groupToForceRotationInId, secondMemberName);
@@ -135,7 +105,7 @@ namespace DutyCycle.IntegrationTests
             Assert.AreEqual(secondMemberName, singleNonDuty.Name);
 
             var forceRotationResponse =
-                await _httpClient.PostAsJsonAsync($"/groups/{groupToForceRotationInId}/rotations", new { });
+                await HttpClient.PostAsJsonAsync($"/groups/{groupToForceRotationInId}/rotations", new { });
             Assert.AreEqual(HttpStatusCode.OK, forceRotationResponse.StatusCode);
 
             var groupAfterRotation = await GetGroup(groupToForceRotationInId);
@@ -144,42 +114,5 @@ namespace DutyCycle.IntegrationTests
             Assert.AreEqual(firstMemberName, singleNonDutyAfterRotation.Name);
             Assert.AreEqual(secondMemberName, singleDutyAfterRotation.Name);
         }
-        
-        private async Task<int> CreateGroupAndGetId(
-            string name = null,
-            string cyclingCronExpression = "* * * * *",
-            int dutiesCount = 1)
-        {
-            var groupSettings = new API.Models.GroupSettings()
-            {
-                Name = name ?? _fixture.Create<string>(),
-                CyclingCronExpression = cyclingCronExpression,
-                DutiesCount = dutiesCount
-            };
-
-            var createGroupResponse = await _httpClient.PostAsJsonAsync("/groups", groupSettings);
-            Assert.AreEqual(HttpStatusCode.OK, createGroupResponse.StatusCode);
-
-            var idString = await createGroupResponse.Content.ReadAsStringAsync();
-            return int.Parse(idString);
-        }
-
-        private async Task<GroupModel> GetGroup(int id)
-        {
-            return await _httpClient.GetFromJsonAsync<GroupModel>("/groups/" + id, _jsonSerializerOptions);
-        }
-
-        private async Task AddMember(int groupId, string name)
-        {
-            var newMemberInfo = new NewMemberInfo() {Name = name};
-            var addMemberResponse =
-                await _httpClient.PostAsJsonAsync($"/groups/{groupId}/members", newMemberInfo);
-            Assert.AreEqual(HttpStatusCode.OK, addMemberResponse.StatusCode);
-        }
-
-        private ApiWebApplicationFactory _factory;
-        private HttpClient _httpClient;
-        private IFixture _fixture;
-        private JsonSerializerOptions _jsonSerializerOptions;
     }
 }
