@@ -54,7 +54,6 @@ namespace DutyCycle.API
             services.AddSingleton<ISlackClient, SlackClient>();
             services.AddSingleton<ISlackMessageTemplater, SlackMessageTemplater>();
             services.AddSingleton<TriggersContext>();
-            services.AddSingleton<ICronValidator, CronValidator>();
             services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();
             services.AddSingleton<IRotationScheduler, RotationScheduler>();
             services.AddSingleton(_ => new SlackTaskClient(Configuration["SlackOAuthToken"]));
