@@ -15,7 +15,7 @@ namespace DutyCycle
         Task AddMemberToGroup(int groupId, NewGroupMemberInfo newGroupMemberInfo);
 
         Task AddTriggerOnRotationChange(int groupId, RotationChangedTrigger trigger);
-        Task RemoveTrigger(int groupId, Guid callbackId);
+        Task RemoveTrigger(int groupId, Guid triggerId);
 
         Task RotateDutiesInGroup(int groupId);
     }

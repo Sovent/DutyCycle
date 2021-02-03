@@ -104,7 +104,7 @@ namespace DutyCycle
             _triggers.Add(trigger);
         }
 
-        public void RemoveActionCallback(Guid triggerId)
+        public void RemoveTrigger(Guid triggerId)
         {
             _triggers.RemoveAll(trigger => trigger.Id == triggerId);
         }

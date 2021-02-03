@@ -44,21 +44,21 @@ namespace DutyCycle.API.Controllers
         }
 
         [HttpPost]
-        [Route("callbacks")]
-        public async Task<IActionResult> AddCallback(
+        [Route("triggers")]
+        public async Task<IActionResult> AddTrigger(
             [FromRoute] int groupId,
             [FromBody] RotationChangedTrigger request)
         {
-            var callback = _mapper.Map<Triggers.RotationChangedTrigger>(request);
-            await _groupService.AddTriggerOnRotationChange(groupId, callback);
+            var trigger = _mapper.Map<Triggers.RotationChangedTrigger>(request);
+            await _groupService.AddTriggerOnRotationChange(groupId, trigger);
             return Ok();
         }
 
         [HttpDelete]
-        [Route("callbacks/{callbackId}")]
-        public async Task<IActionResult> RemoveCallback([FromRoute] int groupId, [FromRoute] Guid callbackId)
+        [Route("triggers/{triggerId}")]
+        public async Task<IActionResult> RemoveTrigger([FromRoute] int groupId, [FromRoute] Guid triggerId)
         {
-            await _groupService.RemoveTrigger(groupId, callbackId);
+            await _groupService.RemoveTrigger(groupId, triggerId);
             return Ok();
         }
         

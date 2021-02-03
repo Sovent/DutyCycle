@@ -83,10 +83,10 @@ namespace DutyCycle
             await _repository.Save(group);
         }
 
-        public async Task RemoveTrigger(int groupId, Guid callbackId)
+        public async Task RemoveTrigger(int groupId, Guid triggerId)
         {
             var group = await _repository.Get(groupId);
-            group.RemoveActionCallback(callbackId);
+            group.RemoveTrigger(triggerId);
             await _repository.Save(group);
         }
 
