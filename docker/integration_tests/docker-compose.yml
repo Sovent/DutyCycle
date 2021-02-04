@@ -5,9 +5,9 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres_password
   tests:    
-    build:
-      context: ../
-      dockerfile: DutyCycle.IntegrationTests/Dockerfile
+    build: 
+      context: ../../
+      dockerfile: docker/integration_tests/Dockerfile
     depends_on:
       - db
     environment:
