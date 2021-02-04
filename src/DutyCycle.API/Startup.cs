@@ -6,6 +6,7 @@ using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
 using DutyCycle.Infrastructure.Json;
 using DutyCycle.Infrastructure.Slack;
+using DutyCycle.Organizations;
 using DutyCycle.Triggers;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -56,6 +57,9 @@ namespace DutyCycle.API
             services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();
             services.AddSingleton<IRotationScheduler, RotationScheduler>();
             services.AddSingleton(_ => new SlackTaskClient(Configuration["SlackOAuthToken"]));
+
+            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IOrganizationsService, OrganizationsService>();
 
             services.AddDbContext<DutyCycleDbContext>(builder =>
             {

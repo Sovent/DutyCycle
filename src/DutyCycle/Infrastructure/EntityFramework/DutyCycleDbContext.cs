@@ -1,6 +1,7 @@
 using Cronos;
 using DutyCycle.Triggers;
 using DutyCycle.Common;
+using DutyCycle.Organizations;
 using Microsoft.EntityFrameworkCore;
 
 namespace DutyCycle.Infrastructure.EntityFramework
@@ -48,8 +49,15 @@ namespace DutyCycle.Infrastructure.EntityFramework
                     .HasDiscriminator<string>("TriggerType")
                     .HasValue<SendSlackMessageTrigger>("send_slack_message");
             });
+
+            modelBuilder.Entity<Organization>(builder =>
+            {
+                builder.HasKey(organization => organization.Id);
+            });
         }
         
         public DbSet<Group> Groups { get; set; }
+        
+        public DbSet<Organization> Organizations { get; set; }
     }
 }

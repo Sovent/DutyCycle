@@ -34,6 +34,9 @@ namespace DutyCycle.API.Filters
                 case DomainException<SlackInteractionFailed> exception:
                     SetResult(exception, HttpStatusCode.BadRequest);
                     break;
+                case DomainException<OrganizationNotFound> exception:
+                    SetResult(exception, HttpStatusCode.NotFound);
+                    break;
             }
         }
     }

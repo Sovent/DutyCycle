@@ -23,6 +23,8 @@ namespace DutyCycle.API.Mapping
                     model => model.CyclingCronExpression,
                     configuration => configuration.MapFrom(
                         groupInfo => groupInfo.CyclingCronExpression.ToString(CronFormat.Standard)));
+
+            CreateMap<NewOrganizationInfo, Organizations.NewOrganizationInfo>();
         }
     }
 }
