@@ -1,8 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=10231022_002D1c73_002D4071_002D98bf_002D2d1a64be4464/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.ScheduledJobTests.MakeGroupWithEnoughMembersToRotate_RotatesAccordingToTheCronExpression&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.GroupScenarioTests&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Or&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.ScheduledJobTests.MakeGroupWithEnoughMembersToRotate_RotatesAccordingToTheCronExpression&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.GroupScenarioTests&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+    &lt;Project Location="/Users/sovent/Projects/DutyCycle/src/DutyCycle.Tests" Presentation="&amp;lt;DutyCycle.Tests&amp;gt;" /&gt;
+  &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>
