@@ -4,9 +4,11 @@ RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 WORKDIR /usr/app
-COPY . .
+COPY ./src .
 
-RUN dotnet build
-RUN chmod +x ./DutyCycle.IntegrationTests/run_tests.sh
+RUN dotnet build DutyCycle.sln
 
-CMD ["./DutyCycle.IntegrationTests/run_tests.sh"]
+COPY ./docker/integration_tests/run_tests.sh .
+RUN chmod +x run_tests.sh
+
+CMD ["./run_tests.sh"]
