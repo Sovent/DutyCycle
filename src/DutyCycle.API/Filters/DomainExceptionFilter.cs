@@ -37,6 +37,12 @@ namespace DutyCycle.API.Filters
                 case DomainException<OrganizationNotFound> exception:
                     SetResult(exception, HttpStatusCode.NotFound);
                     break;
+                case DomainException<CouldNotSignUpUser> exception:
+                    SetResult(exception, HttpStatusCode.BadRequest);
+                    break;
+                case DomainException<PermissionDenied> exception:
+                    SetResult(exception, HttpStatusCode.Forbidden);
+                    break;
             }
         }
     }

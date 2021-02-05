@@ -13,6 +13,7 @@ using GroupModel = DutyCycle.API.Models.Group;
 
 namespace DutyCycle.IntegrationTests
 {
+    [TestFixture]
     public abstract class IntegrationTests
     {
         [OneTimeSetUp]
@@ -47,17 +48,26 @@ namespace DutyCycle.IntegrationTests
             // do nothing   
         }
 
-        protected async Task<int> CreateOrganization(string name = null)
+        protected async Task CreateOrganizationAndAssertSuccess()
         {
             var newOrganizationInfo = new NewOrganizationInfo()
             {
-                Name = name ?? Fixture.Create<string>()
+                Name = Fixture.Create<string>(),
+                AdminCredentials = new UserCredentials()
+                {
+                    Email = Fixture.Create<string>() + "@test.com",
+                    Password = "Qwerty.123"
+                }
             };
-            var createOrganizationResponse = await HttpClient.PostAsJsonAsync("/organizations", newOrganizationInfo);
+            
+            var createOrganizationResponse = await CreateOrganization(newOrganizationInfo);
             
             Assert.AreEqual(HttpStatusCode.OK, createOrganizationResponse.StatusCode);
-            var idString = await createOrganizationResponse.Content.ReadAsStringAsync();
-            return int.Parse(idString);
+        }
+
+        protected async Task<HttpResponseMessage> CreateOrganization(NewOrganizationInfo organizationInfo)
+        {
+            return await HttpClient.PostAsJsonAsync("/organizations", organizationInfo);
         }
         
         protected async Task<int> CreateGroupAndGetId(

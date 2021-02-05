@@ -48,6 +48,7 @@ namespace DutyCycle
                 var nextDuties = memberViews[effectiveDutiesCount..];
                 return new GroupInfo(
                     Id,
+                    OrganizationId,
                     Name, 
                     CyclingCronExpression, 
                     DutiesCount, 

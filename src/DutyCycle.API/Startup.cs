@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using DutyCycle.API.Filters;
@@ -8,10 +10,14 @@ using DutyCycle.Infrastructure.Json;
 using DutyCycle.Infrastructure.Slack;
 using DutyCycle.Organizations;
 using DutyCycle.Triggers;
+using DutyCycle.Users;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,13 +35,17 @@ namespace DutyCycle.API
         }
 
         public IConfiguration Configuration { get; }
-
+        
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration["ConnectionString"];
-
             services
-                .AddControllers(options => options.Filters.Add<DomainExceptionFilter>())
+                .AddControllers(options =>
+                {
+                    options.Filters.Add<DomainExceptionFilter>();
+                    options.Filters.Add<ModelValidationFilter>();
+                })
+                .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
                 .AddJsonOptions(options =>
                 {
                     var serializerOptions = options.JsonSerializerOptions;
@@ -67,6 +77,13 @@ namespace DutyCycle.API
                     connectionString,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.FullName));
             });
+
+            services
+                .AddIdentity<Users.User, Role>()
+                .AddEntityFrameworkStores<DutyCycleDbContext>()
+                .AddDefaultTokenProviders();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserPermissionsService, UserPermissionsService>();
 
             services.AddHangfire(configuration => configuration
                 .UseSimpleAssemblyNameTypeSerializer()
