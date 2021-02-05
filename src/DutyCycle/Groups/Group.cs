@@ -9,14 +9,17 @@ namespace DutyCycle
 {
     public class Group
     {
-        public Group(string name, CronExpression cyclingCronExpression, int dutiesCount)
+        public Group(int organizationId, string name, CronExpression cyclingCronExpression, int dutiesCount)
         {
             Name = name;
             CyclingCronExpression = cyclingCronExpression;
             DutiesCount = dutiesCount;
+            OrganizationId = organizationId;
         }
 
         public int Id { get; private set; }
+        
+        public int OrganizationId { get; private set; }
         
         public string Name { get; private set; }
         

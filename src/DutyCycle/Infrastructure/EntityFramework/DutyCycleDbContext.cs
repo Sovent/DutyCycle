@@ -53,6 +53,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
             modelBuilder.Entity<Organization>(builder =>
             {
                 builder.HasKey(organization => organization.Id);
+                builder.HasMany<Group>().WithOne().HasForeignKey(group => group.OrganizationId).IsRequired();
             });
         }
         

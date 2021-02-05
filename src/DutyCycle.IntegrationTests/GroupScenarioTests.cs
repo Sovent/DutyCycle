@@ -13,6 +13,12 @@ namespace DutyCycle.IntegrationTests
     [TestFixture]
     public class GroupScenarioTests : IntegrationTests
     {
+        [SetUp]
+        public async Task SetupOrganization()
+        {
+            await CreateOrganization();
+        }
+        
         [Test]
         public async Task CreateGroup_ShouldAppearInGroupsList()
         {

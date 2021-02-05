@@ -47,6 +47,19 @@ namespace DutyCycle.IntegrationTests
             // do nothing   
         }
 
+        protected async Task<int> CreateOrganization(string name = null)
+        {
+            var newOrganizationInfo = new NewOrganizationInfo()
+            {
+                Name = name ?? Fixture.Create<string>()
+            };
+            var createOrganizationResponse = await HttpClient.PostAsJsonAsync("/organizations", newOrganizationInfo);
+            
+            Assert.AreEqual(HttpStatusCode.OK, createOrganizationResponse.StatusCode);
+            var idString = await createOrganizationResponse.Content.ReadAsStringAsync();
+            return int.Parse(idString);
+        }
+        
         protected async Task<int> CreateGroupAndGetId(
             string name = null,
             string cyclingCronExpression = "* * * * *",

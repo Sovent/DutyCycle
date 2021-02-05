@@ -34,13 +34,14 @@ namespace DutyCycle
             return groups.Select(group => group.Info).ToArray();
         }
 
-        public async Task<Group> CreateGroup(GroupSettings groupSettings)
+        public async Task<Group> CreateGroup(int organizationId, GroupSettings groupSettings)
         {
             if (groupSettings == null) throw new ArgumentNullException(nameof(groupSettings));
             
             _groupSettingsValidator.Validate(groupSettings);
 
             var group = new Group(
+                organizationId,
                 groupSettings.Name, 
                 CronExpression.Parse(groupSettings.CyclingCronExpression),
                 groupSettings.DutiesCount);
@@ -63,6 +64,8 @@ namespace DutyCycle
             await group.ChangeSettings(groupSettings, _triggersContext);
 
             await _repository.Save(group);
+            
+            _rotationScheduler.ScheduleOrRescheduleForAGroup(group.Info);
         }
 
         public async Task AddMemberToGroup(int groupId, NewGroupMemberInfo newGroupMemberInfo)

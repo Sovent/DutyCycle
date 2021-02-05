@@ -29,7 +29,8 @@ namespace DutyCycle.API.Controllers
         public async Task<IActionResult> Create(Models.GroupSettings request)
         {
             var groupSettings = _mapper.Map<GroupSettings>(request);
-            var group = await _groupService.CreateGroup(groupSettings);
+            // todo: get organization id from cookies
+            var group = await _groupService.CreateGroup(1, groupSettings);
             return Ok(group.Id);
         }
         
