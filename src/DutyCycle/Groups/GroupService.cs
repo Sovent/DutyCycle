@@ -28,9 +28,9 @@ namespace DutyCycle
             return group.Info;
         }
 
-        public async Task<IReadOnlyCollection<GroupInfo>> GetAllGroups()
+        public async Task<IReadOnlyCollection<GroupInfo>> GetGroupsForOrganization(int organizationId)
         {
-            var groups = await _repository.GetAll();
+            var groups = await _repository.GetForOrganization(organizationId);
             return groups.Select(group => group.Info).ToArray();
         }
 

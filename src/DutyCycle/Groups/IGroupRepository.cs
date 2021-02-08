@@ -7,7 +7,7 @@ namespace DutyCycle
     {
         Task<Group> Get(int groupId);
 
-        Task<IReadOnlyCollection<Group>> GetAll();
+        Task<IReadOnlyCollection<Group>> GetForOrganization(int organizationId);
 
         Task Save(Group group);
     }

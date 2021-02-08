@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using DutyCycle.API.Models;
 using AutoFixture;
@@ -10,7 +9,7 @@ namespace DutyCycle.IntegrationTests
     public class OrganizationTests : IntegrationTests
     {
         [Test]
-        public async Task CreateOrganizationWithValidRequest_CreatesSuccessfully()
+        public async Task CreateOrganizationWithValidRequest_CreatesSuccessfullyWithAuthCookies()
         {
             var newOrganizationInfo = new NewOrganizationInfo()
             {
@@ -25,6 +24,7 @@ namespace DutyCycle.IntegrationTests
             var createOrganizationResponse = await CreateOrganization(newOrganizationInfo);
             
             Assert.AreEqual(HttpStatusCode.OK, createOrganizationResponse.StatusCode);
+            Assert.IsTrue(createOrganizationResponse.Headers.Contains("Set-Cookie"));
         }
         
         [Test]

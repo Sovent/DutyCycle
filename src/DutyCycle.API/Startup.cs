@@ -1,7 +1,7 @@
-using System;
-using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using AutoMapper;
+using DutyCycle.API.Authentication;
 using DutyCycle.API.Filters;
 using DutyCycle.API.Mapping;
 using DutyCycle.Infrastructure;
@@ -13,11 +13,11 @@ using DutyCycle.Triggers;
 using DutyCycle.Users;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,6 +54,31 @@ namespace DutyCycle.API
                         new TypeDiscriminatorJsonConverter<Models.RotationChangedTrigger>());
                 });
 
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.Cookie.Name = "auth_cookie";
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = redirectContext =>
+                        {
+                            redirectContext.HttpContext.Response.StatusCode = 401;
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => 
+                    builder.SetIsOriginAllowed(_ => true)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
+
             services.AddAutoMapper(configuration =>
             {
                 configuration.AddProfile(typeof(ModelsMappingProfile));
@@ -79,7 +104,10 @@ namespace DutyCycle.API
             });
 
             services
-                .AddIdentity<Users.User, Role>()
+                .AddIdentityCore<Users.User>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                })
                 .AddEntityFrameworkStores<DutyCycleDbContext>()
                 .AddDefaultTokenProviders();
             services.AddScoped<IUserService, UserService>();
@@ -98,15 +126,12 @@ namespace DutyCycle.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder =>
-            {
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-                builder.AllowAnyOrigin();
-            });
+            app.UseCors();
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

@@ -65,6 +65,9 @@ namespace DutyCycle.IntegrationTests
             Assert.AreEqual(HttpStatusCode.OK, createOrganizationResponse.StatusCode);
         }
 
+        /// <remarks>
+        /// Response with set-cookie implicitly makes HttpClient attach this cookie to next requests
+        /// </remarks>
         protected async Task<HttpResponseMessage> CreateOrganization(NewOrganizationInfo organizationInfo)
         {
             return await HttpClient.PostAsJsonAsync("/organizations", organizationInfo);

@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DutyCycle.Errors;
+using LanguageExt;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DutyCycle.Users
 {
@@ -33,7 +35,20 @@ namespace DutyCycle.Users
                     DateTimeOffset.UtcNow)
                 .ToException();
         }
-        
+
+        public async Task<Option<User>> FindByCredentials(UserCredentials credentials)
+        {
+            var userWithProvidedEmail = (Option<User>)await _userManager.FindByEmailAsync(credentials.Email);
+            return await userWithProvidedEmail
+                .FilterAsync(user => _userManager.CheckPasswordAsync(user, credentials.Password))
+                .ToOption();
+        }
+
+        public async Task<Option<User>> FindById(int userId)
+        {
+            return await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        }
+
         private readonly UserManager<User> _userManager;
     }
 }

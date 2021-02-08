@@ -16,6 +16,12 @@ namespace DutyCycle.IntegrationTests
             Worker.Configure(serviceCollection);
         }
 
+        [SetUp]
+        public async Task SetupOrganization()
+        {
+            await CreateOrganizationAndAssertSuccess();
+        }
+        
         [Test]
         public async Task MakeGroupWithEnoughMembersToRotate_RotatesAccordingToTheCronExpression()
         {

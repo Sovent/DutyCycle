@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using DutyCycle.API.Authentication;
 using DutyCycle.Organizations;
 using DutyCycle.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,13 @@ namespace DutyCycle.API.Controllers
         public OrganizationsController(
             IOrganizationsService organizationsService, 
             IMapper mapper,
-            IUserService userService)
+            IAuthenticationService authenticationService)
         {
             _organizationsService =
                 organizationsService ?? throw new ArgumentNullException(nameof(organizationsService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _authenticationService = 
+                authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
         
         [HttpPost]
@@ -29,13 +31,14 @@ namespace DutyCycle.API.Controllers
             var newOrganizationId = await _organizationsService.Create(newOrganizationInfo);
 
             var organizationUser = _mapper.Map<UserCredentials>(newOrganizationRequest.AdminCredentials);
-            await _userService.SignUpUser(organizationUser, newOrganizationId);
+
+            await _authenticationService.SignUp(organizationUser, newOrganizationId, HttpContext);
 
             return Ok(newOrganizationId);
         }
         
         private readonly IOrganizationsService _organizationsService;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
+        private readonly IAuthenticationService _authenticationService;
     }
 }
