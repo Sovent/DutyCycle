@@ -21,7 +21,7 @@ namespace DutyCycle.IntegrationTests
                 }
             };
             
-            var createOrganizationResponse = await CreateOrganization(newOrganizationInfo);
+            var createOrganizationResponse = await CreateOrganizationAndSignIn(newOrganizationInfo);
             
             Assert.AreEqual(HttpStatusCode.OK, createOrganizationResponse.StatusCode);
             Assert.IsTrue(createOrganizationResponse.Headers.Contains("Set-Cookie"));
@@ -36,7 +36,7 @@ namespace DutyCycle.IntegrationTests
                 AdminCredentials = null
             };
             
-            var createOrganizationResponse = await CreateOrganization(newOrganizationInfo);
+            var createOrganizationResponse = await CreateOrganizationAndSignIn(newOrganizationInfo);
             
             Assert.AreEqual(HttpStatusCode.BadRequest, createOrganizationResponse.StatusCode);
         }
@@ -54,7 +54,7 @@ namespace DutyCycle.IntegrationTests
                 }
             };
             
-            var createOrganizationResponse = await CreateOrganization(newOrganizationInfo);
+            var createOrganizationResponse = await CreateOrganizationAndSignIn(newOrganizationInfo);
             
             Assert.AreEqual(HttpStatusCode.BadRequest, createOrganizationResponse.StatusCode);
         }
