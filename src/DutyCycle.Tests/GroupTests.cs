@@ -32,7 +32,11 @@ namespace DutyCycle.Tests
         [Test]
         public void GetGroupInfoWhenMembersCountIsLessThatDutiesCount_AllMembersAreCurrentDuties()
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 2);
+            var group = new Group(
+                _fixture.Create<int>(),
+                _fixture.Create<string>(), 
+                _fixture.Create<CronExpression>(),
+                dutiesCount: 2);
             var newGroupMemberInfo = _fixture.Create<NewGroupMemberInfo>();
             group.AddMember(newGroupMemberInfo, _triggersContext);
 
@@ -46,7 +50,11 @@ namespace DutyCycle.Tests
         [Test]
         public void GetGroupInfoWhenSomeoneIsNotOnDuty_LeavesHimInNextDuties()
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
+            var group = new Group(
+                _fixture.Create<int>(),
+                _fixture.Create<string>(), 
+                _fixture.Create<CronExpression>(),
+                dutiesCount: 1);
             var onDutyMemberInfo = _fixture.Create<NewGroupMemberInfo>();
             var notOnDutyMemberInfo = _fixture.Create<NewGroupMemberInfo>();
             group.AddMember(onDutyMemberInfo, _triggersContext);
@@ -151,7 +159,11 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 3);
+            var group = new Group(
+                _fixture.Create<int>(), 
+                _fixture.Create<string>(), 
+                _fixture.Create<CronExpression>(),
+                dutiesCount: 3);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
 
@@ -169,7 +181,11 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 4);
+            var group = new Group(
+                _fixture.Create<int>(), 
+                _fixture.Create<string>(), 
+                _fixture.Create<CronExpression>(), 
+                dutiesCount: 4);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
 
@@ -187,7 +203,11 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo originalFirst,
             NewGroupMemberInfo originalSecond)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 4);
+            var group = new Group(
+                _fixture.Create<int>(), 
+                _fixture.Create<string>(), 
+                _fixture.Create<CronExpression>(), 
+                dutiesCount: 4);
             group.AddMember(originalFirst, _triggersContext);
             group.AddMember(originalSecond, _triggersContext);
             var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());
@@ -204,7 +224,11 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo memberToDisposeFromDuty,
             NewGroupMemberInfo memberToRetrieveDutyFirstTime)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 2);
+            var group = new Group(
+                _fixture.Create<int>(),
+                _fixture.Create<string>(),
+                _fixture.Create<CronExpression>(),
+                dutiesCount: 2);
             group.AddMember(memberToRetrieveDutySecondTime, _triggersContext);
             group.AddMember(memberToDisposeFromDuty, _triggersContext);
             group.AddMember(memberToRetrieveDutyFirstTime, _triggersContext);
@@ -225,7 +249,11 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo memberToPassDuty,
             NewGroupMemberInfo memberToRetrieveDuty)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
+            var group = new Group(
+                _fixture.Create<int>(),
+                _fixture.Create<string>(),
+                _fixture.Create<CronExpression>(),
+                dutiesCount: 1);
             group.AddMember(memberToPassDuty, _triggersContext);
             group.AddMember(memberToRetrieveDuty, _triggersContext);
 
@@ -240,7 +268,11 @@ namespace DutyCycle.Tests
             NewGroupMemberInfo memberToPassDuty,
             NewGroupMemberInfo memberToRetrieveDuty)
         {
-            var group = new Group(_fixture.Create<string>(), _fixture.Create<CronExpression>(), dutiesCount: 1);
+            var group = new Group(
+                _fixture.Create<int>(),
+                _fixture.Create<string>(), 
+                _fixture.Create<CronExpression>(), 
+                dutiesCount: 1);
             group.AddMember(memberToPassDuty, _triggersContext);
             group.AddMember(memberToRetrieveDuty, _triggersContext);
             var triggerMock = new Mock<RotationChangedTrigger>(Guid.NewGuid());

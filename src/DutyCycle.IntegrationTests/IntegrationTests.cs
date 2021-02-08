@@ -13,6 +13,7 @@ using GroupModel = DutyCycle.API.Models.Group;
 
 namespace DutyCycle.IntegrationTests
 {
+    [TestFixture]
     public abstract class IntegrationTests
     {
         [OneTimeSetUp]
@@ -47,6 +48,47 @@ namespace DutyCycle.IntegrationTests
             // do nothing   
         }
 
+        protected async Task<UserCredentials> CreateOrganizationAndAssertSuccess()
+        {
+            var newOrganizationInfo = new NewOrganizationInfo()
+            {
+                Name = Fixture.Create<string>(),
+                AdminCredentials = new UserCredentials()
+                {
+                    Email = Fixture.Create<string>() + "@test.com",
+                    Password = "Qwerty.123"
+                }
+            };
+            
+            var createOrganizationResponse = await CreateOrganizationAndSignIn(newOrganizationInfo);
+            
+            Assert.AreEqual(HttpStatusCode.OK, createOrganizationResponse.StatusCode);
+            
+            return newOrganizationInfo.AdminCredentials;
+        }
+
+        /// <remarks>
+        /// Response with set-cookie implicitly makes HttpClient attach this cookie to next requests
+        /// </remarks>
+        protected async Task<HttpResponseMessage> CreateOrganizationAndSignIn(NewOrganizationInfo organizationInfo)
+        {
+            return await HttpClient.PostAsJsonAsync("/organizations", organizationInfo);
+        }
+
+        protected async Task SignIn(UserCredentials credentials)
+        {
+            var signInResponse = await HttpClient.PostAsJsonAsync("/users/signin", credentials);
+            
+            Assert.AreEqual(HttpStatusCode.OK, signInResponse.StatusCode);
+        }
+        
+        protected async Task SignOut()
+        {
+            var signOutResponse = await HttpClient.PostAsJsonAsync("/users/signout", new { });
+            
+            Assert.AreEqual(HttpStatusCode.OK, signOutResponse.StatusCode);
+        }
+        
         protected async Task<int> CreateGroupAndGetId(
             string name = null,
             string cyclingCronExpression = "* * * * *",

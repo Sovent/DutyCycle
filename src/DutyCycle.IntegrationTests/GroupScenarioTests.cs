@@ -10,9 +10,14 @@ using GroupModel = DutyCycle.API.Models.Group;
 
 namespace DutyCycle.IntegrationTests
 {
-    [TestFixture]
     public class GroupScenarioTests : IntegrationTests
     {
+        [SetUp]
+        public async Task SetupOrganization()
+        {
+            await CreateOrganizationAndAssertSuccess();
+        }
+        
         [Test]
         public async Task CreateGroup_ShouldAppearInGroupsList()
         {

@@ -26,9 +26,11 @@ namespace DutyCycle.Infrastructure.EntityFramework
             return group;
         }
 
-        public async Task<IReadOnlyCollection<Group>> GetAll()
+        public async Task<IReadOnlyCollection<Group>> GetForOrganization(int organizationId)
         {
-            var groups = await GroupsWithRelatedData.ToListAsync();
+            var groups = await GroupsWithRelatedData
+                .Where(group => group.OrganizationId == organizationId)
+                .ToListAsync();
             return groups;
         }
 

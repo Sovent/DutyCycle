@@ -2,11 +2,13 @@ using Cronos;
 using DutyCycle.Triggers;
 using DutyCycle.Common;
 using DutyCycle.Organizations;
+using DutyCycle.Users;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DutyCycle.Infrastructure.EntityFramework
 {
-    public class DutyCycleDbContext : DbContext
+    public class DutyCycleDbContext : IdentityDbContext<User, Role, int>
     {
         public DutyCycleDbContext(DbContextOptions options) : base(options)
         {
@@ -53,6 +55,12 @@ namespace DutyCycle.Infrastructure.EntityFramework
             modelBuilder.Entity<Organization>(builder =>
             {
                 builder.HasKey(organization => organization.Id);
+                builder.HasMany<Group>().WithOne().HasForeignKey(group => group.OrganizationId).IsRequired();
+            });
+
+            modelBuilder.Entity<User>(builder =>
+            {
+                builder.HasOne<Organization>().WithMany().HasForeignKey(user => user.OrganizationId).IsRequired();
             });
         }
         

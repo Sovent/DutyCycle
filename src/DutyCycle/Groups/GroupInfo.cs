@@ -9,6 +9,7 @@ namespace DutyCycle
     {
         public GroupInfo(
             int id,
+            int organizationId,
             string name,
             CronExpression cyclingCronExpression,
             int dutiesCount,
@@ -23,10 +24,13 @@ namespace DutyCycle
             CurrentDuties = currentDuties;
             NextDuties = nextDuties;
             Triggers = triggers;
+            OrganizationId = organizationId;
         }
 
         public int Id { get; }
 
+        public int OrganizationId { get; }
+        
         public string Name { get; }
         
         public CronExpression CyclingCronExpression { get; }

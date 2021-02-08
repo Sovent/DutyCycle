@@ -8,9 +8,9 @@ namespace DutyCycle
     public interface IGroupService
     {
         Task<GroupInfo> GetGroup(int groupId);
-        Task<IReadOnlyCollection<GroupInfo>> GetAllGroups();
+        Task<IReadOnlyCollection<GroupInfo>> GetGroupsForOrganization(int organizationId);
 
-        Task<Group> CreateGroup(GroupSettings groupSettings);
+        Task<Group> CreateGroup(int organizationId, GroupSettings groupSettings);
         Task EditGroup(int groupId, GroupSettings groupSettings);
         Task AddMemberToGroup(int groupId, NewGroupMemberInfo newGroupMemberInfo);
 

@@ -2,6 +2,8 @@ using AutoMapper;
 using Cronos;
 using DutyCycle.API.Models;
 using DutyCycle.Common;
+using DutyCycle.Users;
+using UserCredentials = DutyCycle.Users.UserCredentials;
 
 namespace DutyCycle.API.Mapping
 {
@@ -25,6 +27,8 @@ namespace DutyCycle.API.Mapping
                         groupInfo => groupInfo.CyclingCronExpression.ToString(CronFormat.Standard)));
 
             CreateMap<NewOrganizationInfo, Organizations.NewOrganizationInfo>();
+
+            CreateMap<Models.UserCredentials, UserCredentials>();
         }
     }
 }

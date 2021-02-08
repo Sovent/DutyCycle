@@ -4,8 +4,10 @@
     &lt;TestAncestor&gt;
       &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.ScheduledJobTests.MakeGroupWithEnoughMembersToRotate_RotatesAccordingToTheCronExpression&lt;/TestId&gt;
       &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.GroupScenarioTests&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::5A8E8FCA-3B99-4988-884A-67296BD4BFAB::.NETCoreApp,Version=v3.1::DutyCycle.IntegrationTests.OrganizationTests.CreateOrganizationWithNoAdminCredentials_BadRequest&lt;/TestId&gt;
     &lt;/TestAncestor&gt;
     &lt;Project Location="/Users/sovent/Projects/DutyCycle/src/DutyCycle.Tests" Presentation="&amp;lt;DutyCycle.Tests&amp;gt;" /&gt;
+    &lt;Project Location="/Users/sovent/Projects/DutyCycle/src/DutyCycle.IntegrationTests" Presentation="&amp;lt;DutyCycle.IntegrationTests&amp;gt;" /&gt;
   &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>
