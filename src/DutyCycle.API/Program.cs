@@ -27,7 +27,7 @@ namespace DutyCycle.API
 
         private static void ConfigureServicesForWorker(IHostBuilder builder)
         {
-            builder.ConfigureServices(ServiceCollectionExtensions.ConfigureWorker);
+            builder.ConfigureServices(Worker.Configure);
         }
     }
 }

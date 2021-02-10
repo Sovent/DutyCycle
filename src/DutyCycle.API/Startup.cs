@@ -96,9 +96,12 @@ namespace DutyCycle.API
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IOrganizationsService, OrganizationsService>();
 
-            services
-                .UseDutyCycleDbContext(connectionString)
-                .UseOneTransactionPerRequest();
+            services.AddDbContext<DutyCycleDbContext>(builder =>
+            {
+                builder.UseNpgsql(
+                    connectionString,
+                    optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.FullName));
+            });
 
             services
                 .AddIdentityCore<Users.User>(options =>

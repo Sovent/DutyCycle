@@ -13,7 +13,7 @@ namespace DutyCycle.IntegrationTests
     {
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.ConfigureWorker();
+            Worker.Configure(serviceCollection);
         }
 
         [SetUp]
