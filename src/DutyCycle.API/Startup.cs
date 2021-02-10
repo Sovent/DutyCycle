@@ -39,11 +39,14 @@ namespace DutyCycle.API
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration["ConnectionString"];
+
+            services.AddScoped<TransactionFilter>();
             services
                 .AddControllers(options =>
                 {
                     options.Filters.Add<DomainExceptionFilter>();
                     options.Filters.Add<ModelValidationFilter>();
+                    options.Filters.AddService<TransactionFilter>();
                 })
                 .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
                 .AddJsonOptions(options =>
