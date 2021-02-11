@@ -4,8 +4,11 @@ using AutoMapper;
 using DutyCycle.API.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using DutyCycle.API.Models;
-using DutyCycle.Users;
+using DutyCycle.Groups.Application;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Users.Application;
 using Microsoft.AspNetCore.Authorization;
+using GroupSettings = DutyCycle.Groups.Domain.GroupSettings;
 
 namespace DutyCycle.API.Controllers
 {
@@ -62,7 +65,7 @@ namespace DutyCycle.API.Controllers
         {
             await _permissionsService.ValidateHasAccessToGroup(User.GetUserId(), groupId);
             
-            var trigger = _mapper.Map<Triggers.RotationChangedTrigger>(request);
+            var trigger = _mapper.Map<Groups.Domain.Triggers.RotationChangedTrigger>(request);
             await _groupService.AddTriggerOnRotationChange(groupId, trigger);
             return Ok();
         }

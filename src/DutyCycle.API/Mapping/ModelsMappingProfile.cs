@@ -2,8 +2,12 @@ using AutoMapper;
 using Cronos;
 using DutyCycle.API.Models;
 using DutyCycle.Common;
+using DutyCycle.Groups.Domain;
 using DutyCycle.Users;
-using UserCredentials = DutyCycle.Users.UserCredentials;
+using GroupSettings = DutyCycle.Groups.Domain.GroupSettings;
+using RotationChangedTrigger = DutyCycle.Groups.Domain.Triggers.RotationChangedTrigger;
+using SendSlackMessageTrigger = DutyCycle.Groups.Domain.Triggers.SendSlackMessageTrigger;
+using UserCredentials = DutyCycle.Users.Domain.UserCredentials;
 
 namespace DutyCycle.API.Mapping
 {
@@ -14,11 +18,11 @@ namespace DutyCycle.API.Mapping
             CreateMap<Models.GroupSettings, GroupSettings>();
             CreateMap<GroupMemberInfo, Models.GroupMember>();
 
-            CreateMap<Models.RotationChangedTrigger, Triggers.RotationChangedTrigger>().IncludeAllDerived();
-            CreateMap<Models.SendSlackMessageTrigger, Triggers.SendSlackMessageTrigger>();
+            CreateMap<Models.RotationChangedTrigger, RotationChangedTrigger>().IncludeAllDerived();
+            CreateMap<Models.SendSlackMessageTrigger, SendSlackMessageTrigger>();
 
-            CreateMap<Triggers.RotationChangedTrigger, Models.RotationChangedTrigger>().IncludeAllDerived();
-            CreateMap<Triggers.SendSlackMessageTrigger, Models.SendSlackMessageTrigger>();
+            CreateMap<RotationChangedTrigger, Models.RotationChangedTrigger>().IncludeAllDerived();
+            CreateMap<SendSlackMessageTrigger, Models.SendSlackMessageTrigger>();
 
             CreateMap<GroupInfo, Models.Group>()
                 .ForMember(
@@ -26,7 +30,7 @@ namespace DutyCycle.API.Mapping
                     configuration => configuration.MapFrom(
                         groupInfo => groupInfo.CyclingCronExpression.ToString(CronFormat.Standard)));
 
-            CreateMap<NewOrganizationInfo, Organizations.NewOrganizationInfo>();
+            CreateMap<NewOrganizationInfo, Groups.Domain.Organizations.NewOrganizationInfo>();
 
             CreateMap<Models.UserCredentials, UserCredentials>();
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DutyCycle.Groups.Domain;
 using LanguageExt;
 using LanguageExt.Common;
 using NUnit.Framework;

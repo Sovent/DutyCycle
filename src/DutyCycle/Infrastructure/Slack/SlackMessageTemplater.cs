@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DutyCycle.Triggers;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Triggers;
 
 namespace DutyCycle.Infrastructure.Slack
 {

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using DutyCycle.Users;
+using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Http;
 
 namespace DutyCycle.API.Authentication

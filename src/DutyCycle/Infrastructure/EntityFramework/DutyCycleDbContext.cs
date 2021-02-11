@@ -1,8 +1,9 @@
 using Cronos;
-using DutyCycle.Triggers;
 using DutyCycle.Common;
-using DutyCycle.Organizations;
-using DutyCycle.Users;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Triggers;
+using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

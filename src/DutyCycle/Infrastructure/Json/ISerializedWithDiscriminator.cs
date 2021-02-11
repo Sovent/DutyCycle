@@ -1,4 +1,4 @@
-namespace DutyCycle.Infrastructure
+namespace DutyCycle.Infrastructure.Json
 {
     public interface ISerializedWithDiscriminator
     {

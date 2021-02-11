@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DutyCycle.API.Authentication;
+using DutyCycle.Groups.Application;
+using DutyCycle.Groups.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

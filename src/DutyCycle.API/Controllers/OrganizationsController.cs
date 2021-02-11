@@ -2,8 +2,10 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using DutyCycle.API.Authentication;
-using DutyCycle.Organizations;
+using DutyCycle.Groups.Application;
+using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Users;
+using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DutyCycle.API.Controllers

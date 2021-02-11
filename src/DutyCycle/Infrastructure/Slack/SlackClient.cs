@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using DutyCycle.Errors;
-using DutyCycle.Triggers;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Triggers;
 using SlackAPI;
 
 namespace DutyCycle.Infrastructure.Slack

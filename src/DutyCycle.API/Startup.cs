@@ -4,13 +4,15 @@ using AutoMapper;
 using DutyCycle.API.Authentication;
 using DutyCycle.API.Filters;
 using DutyCycle.API.Mapping;
+using DutyCycle.Groups.Application;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Triggers;
 using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
 using DutyCycle.Infrastructure.Json;
 using DutyCycle.Infrastructure.Slack;
-using DutyCycle.Organizations;
-using DutyCycle.Triggers;
-using DutyCycle.Users;
+using DutyCycle.Users.Application;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -24,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SlackAPI;
 using SlackClient = DutyCycle.Infrastructure.Slack.SlackClient;
+using User = DutyCycle.Users.Domain.User;
 
 namespace DutyCycle.API
 {
@@ -107,7 +110,7 @@ namespace DutyCycle.API
             });
 
             services
-                .AddIdentityCore<Users.User>(options =>
+                .AddIdentityCore<User>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
                 })

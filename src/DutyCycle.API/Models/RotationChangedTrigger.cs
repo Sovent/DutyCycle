@@ -1,5 +1,6 @@
 using System;
 using DutyCycle.Infrastructure;
+using DutyCycle.Infrastructure.Json;
 
 namespace DutyCycle.API.Models
 {

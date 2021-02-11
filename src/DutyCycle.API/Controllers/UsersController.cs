@@ -23,7 +23,7 @@ namespace DutyCycle.API.Controllers
         [Route("signin")]
         public async Task<IActionResult> SignIn([FromBody]UserCredentials credentialsModel)
         {
-            var credentials = _mapper.Map<Users.UserCredentials>(credentialsModel);
+            var credentials = _mapper.Map<Users.Domain.UserCredentials>(credentialsModel);
             
             await _authenticationService.SignIn(credentials, HttpContext);
             

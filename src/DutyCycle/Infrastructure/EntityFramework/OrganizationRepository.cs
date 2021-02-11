@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using DutyCycle.Errors;
-using DutyCycle.Organizations;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Organizations;
 using Microsoft.EntityFrameworkCore;
 
 namespace DutyCycle.Infrastructure.EntityFramework

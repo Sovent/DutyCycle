@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using DutyCycle.API.Authentication;
+using DutyCycle.Groups.Application;
 using DutyCycle.Users;
+using DutyCycle.Users.Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

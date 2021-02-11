@@ -1,6 +1,8 @@
 using System.Net;
 using DutyCycle.API.Models;
-using DutyCycle.Errors;
+using DutyCycle.Common;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

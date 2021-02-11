@@ -3,7 +3,8 @@ using System.Linq;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using Cronos;
-using DutyCycle.Triggers;
+using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Triggers;
 using Moq;
 using NUnit.Framework;
 

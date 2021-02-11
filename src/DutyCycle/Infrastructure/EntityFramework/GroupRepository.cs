@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DutyCycle.Errors;
+using DutyCycle.Groups.Domain;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
