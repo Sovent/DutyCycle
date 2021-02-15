@@ -1,8 +1,10 @@
 name: Deploy to AWS Elastic Beanstalk
 
 on:
-  pull_request:
-    branches: [ master ]
+  workflow_run:
+    workflows: [ 'Run Tests' ]
+    types:
+      - completed
 
 jobs:
   build-images:
