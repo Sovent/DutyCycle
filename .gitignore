@@ -3,3 +3,4 @@ obj/
 /packages/
 .idea
 .vscode
+.DS_Store

@@ -1,0 +1,45 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "migrations",
+      "image": "sovent/dutycyclemigrations",
+      "memory": 128,
+      "essential": false
+    },
+    {
+      "name": "api",
+      "image": "sovent/dutycycleapi",
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 5000
+        },
+        {
+          "hostPort": 8080,
+          "containerPort": 5001
+        }
+      ],
+      "dependsOn": [
+        {
+          "containerName": "migrations",
+          "condition": "SUCCESS"
+        }
+      ],
+      "memory": 128,
+      "essential": false
+    },
+    {
+      "name": "worker",
+      "image": "sovent/dutycycleworker",
+      "dependsOn": [
+        {
+          "containerName": "migrations",
+          "condition": "SUCCESS"
+        }
+      ],
+      "memory": 128,
+      "essential": true
+    }
+  ]
+}
