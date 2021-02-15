@@ -1,5 +1,3 @@
-FROM sovent/dutycyclebase
+FROM sovent/dutycycleapi
 
-WORKDIR /usr/app/Deploy
-
-CMD ["dotnet", "DutyCycle.API.dll", "--worker"]
+CMD ["--worker"]
