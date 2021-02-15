@@ -67,7 +67,7 @@ jobs:
   push-to-aws:
     name: "Push AWS to deploy"
     runs-on: ubuntu-latest
-    needs:[ build-images ]
+    needs: [ build-images ]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
