@@ -7,6 +7,8 @@ using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using static LanguageExt.Prelude;
+
 namespace DutyCycle.Infrastructure.EntityFramework
 {
     public class DutyCycleDbContext : IdentityDbContext<User, Role, int>
@@ -70,6 +72,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
 
             modelBuilder.Entity<SlackConnection>(builder =>
             {
+                builder.ToTable("SlackConnections");
                 builder.HasKey(connection => connection.Id);
                 builder.Property(connection => connection.Id).ValueGeneratedNever();
                 builder
@@ -77,6 +80,10 @@ namespace DutyCycle.Infrastructure.EntityFramework
                     .WithOne()
                     .HasForeignKey<SlackConnection>(connection => connection.OrganizationId)
                     .IsRequired();
+                builder
+                    .Property("_accessToken")
+                    .IsRequired(false);
+                builder.Ignore(connection => connection.AccessToken);
             });
         }
         
@@ -84,6 +91,6 @@ namespace DutyCycle.Infrastructure.EntityFramework
         
         public DbSet<Organization> Organizations { get; set; }
         
-        public DbSet<SlackConnection> InitiatedSlackConnections { get; set; }
+        public DbSet<SlackConnection> SlackConnections { get; set; }
     }
 }

@@ -4,16 +4,19 @@ using DutyCycle.Groups.Domain.Organizations;
 
 namespace DutyCycle.Groups.Application
 {
-    public class SlackIntegrationService : ISlackIntegrationService
+    public class SlackConnectionService : ISlackIntegrationService
     {
-        public SlackIntegrationService(
+        public SlackConnectionService(
             ISlackConnectionRepository slackConnectionRepository,
-            IAddToSlackLinkProvider addToSlackLinkProvider)
+            IAddToSlackLinkProvider addToSlackLinkProvider,
+            ISlackAccessTokenRetriever slackAccessTokenRetriever)
         {
             _slackConnectionRepository = slackConnectionRepository ??
                                          throw new ArgumentNullException(nameof(slackConnectionRepository));
             _addToSlackLinkProvider =
                 addToSlackLinkProvider ?? throw new ArgumentNullException(nameof(addToSlackLinkProvider));
+            _slackAccessTokenRetriever = slackAccessTokenRetriever ??
+                                         throw new ArgumentNullException(nameof(slackAccessTokenRetriever));
         }
         
         public async Task<string> GetSlackConnectionLinkForOrganization(int organizationId)
@@ -23,14 +26,23 @@ namespace DutyCycle.Groups.Application
                     async () =>
                     {
                         var newConnection = SlackConnection.New(organizationId);
-                        await _slackConnectionRepository.Save(newConnection);
+                        await _slackConnectionRepository.Create(newConnection);
                         return newConnection;
                     });
             var addToSlackLink = _addToSlackLinkProvider.GetLink(slackConnection.Id);
             return addToSlackLink;
         }
 
+        public async Task CompleteSlackConnection(Guid connectionId, string authenticationCode)
+        {
+            var connection = await _slackConnectionRepository.GetById(connectionId);
+            var accessToken = await _slackAccessTokenRetriever.RetrieveToken(authenticationCode);
+            connection.SetAccessToken(accessToken);
+            await _slackConnectionRepository.Update(connection);
+        }
+
         private readonly ISlackConnectionRepository _slackConnectionRepository;
         private readonly IAddToSlackLinkProvider _addToSlackLinkProvider;
+        private readonly ISlackAccessTokenRetriever _slackAccessTokenRetriever;
     }
 }

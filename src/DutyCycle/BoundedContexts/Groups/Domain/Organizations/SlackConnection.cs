@@ -1,4 +1,5 @@
 using System;
+using LanguageExt;
 
 namespace DutyCycle.Groups.Domain.Organizations
 {
@@ -16,5 +17,17 @@ namespace DutyCycle.Groups.Domain.Organizations
         public Guid Id { get; private set; }
         
         public int OrganizationId { get; private set; }
+
+        public Option<string> AccessToken => _accessToken;
+
+        public void SetAccessToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                throw new ArgumentException("Access token cannot be null or whitespace.", nameof(token));
+            
+            _accessToken = token;
+        }
+        
+        private string _accessToken;
     }
 }

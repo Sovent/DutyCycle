@@ -10,6 +10,8 @@ namespace DutyCycle.Groups.Domain.Organizations
 
         Task<Option<SlackConnection>> TryGetForOrganization(int organizationId);
 
-        Task Save(SlackConnection connection);
+        Task Create(SlackConnection connection);
+
+        Task Update(SlackConnection connection);
     }
 }

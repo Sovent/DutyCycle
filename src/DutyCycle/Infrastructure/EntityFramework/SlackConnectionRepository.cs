@@ -15,7 +15,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
         
         public Task<SlackConnection> GetById(Guid id)
         {
-            var connection = _dbContext.InitiatedSlackConnections.FirstOrDefaultAsync(c => c.Id == id);
+            var connection = _dbContext.SlackConnections.FirstOrDefaultAsync(c => c.Id == id);
             if (connection == default)
             {
                 throw new SlackConnectionNotFound(id, DateTimeOffset.UtcNow).ToException();
@@ -26,16 +26,21 @@ namespace DutyCycle.Infrastructure.EntityFramework
 
         public async Task<Option<SlackConnection>> TryGetForOrganization(int organizationId)
         {
-            return await _dbContext.InitiatedSlackConnections
+            return await _dbContext.SlackConnections
                 .FirstOrDefaultAsync(connection => connection.OrganizationId == organizationId);
         }
 
-        public async Task Save(SlackConnection connection)
+        public async Task Create(SlackConnection connection)
         {
-            await _dbContext.InitiatedSlackConnections.AddAsync(connection);
+            await _dbContext.SlackConnections.AddAsync(connection);
             await _dbContext.SaveChangesAsync();
         }
-        
+
+        public async Task Update(SlackConnection connection)
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
         private readonly DutyCycleDbContext _dbContext;
     }
 }
