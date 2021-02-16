@@ -98,6 +98,10 @@ namespace DutyCycle.API
             services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();
             services.AddSingleton<IRotationScheduler, RotationScheduler>();
             services.AddSingleton(_ => new SlackTaskClient(Configuration["SlackOAuthToken"]));
+            services.AddSingleton<IAddToSlackLinkProvider, AddToSlackLinkProvider>(provider =>
+                new AddToSlackLinkProvider(Configuration["Slack:ClientId"]));
+            services.AddScoped<ISlackConnectionRepository, SlackConnectionRepository>();
+            services.AddScoped<ISlackIntegrationService, SlackIntegrationService>();
 
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IOrganizationsService, OrganizationsService>();

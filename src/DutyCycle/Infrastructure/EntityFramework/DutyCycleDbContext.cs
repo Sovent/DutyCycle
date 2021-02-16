@@ -56,17 +56,34 @@ namespace DutyCycle.Infrastructure.EntityFramework
             modelBuilder.Entity<Organization>(builder =>
             {
                 builder.HasKey(organization => organization.Id);
-                builder.HasMany<Group>().WithOne().HasForeignKey(group => group.OrganizationId).IsRequired();
+                builder
+                    .HasMany<Group>()
+                    .WithOne()
+                    .HasForeignKey(group => group.OrganizationId)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<User>(builder =>
             {
                 builder.HasOne<Organization>().WithMany().HasForeignKey(user => user.OrganizationId).IsRequired();
             });
+
+            modelBuilder.Entity<SlackConnection>(builder =>
+            {
+                builder.HasKey(connection => connection.Id);
+                builder.Property(connection => connection.Id).ValueGeneratedNever();
+                builder
+                    .HasOne<Organization>()
+                    .WithOne()
+                    .HasForeignKey<SlackConnection>(connection => connection.OrganizationId)
+                    .IsRequired();
+            });
         }
         
         public DbSet<Group> Groups { get; set; }
         
         public DbSet<Organization> Organizations { get; set; }
+        
+        public DbSet<SlackConnection> InitiatedSlackConnections { get; set; }
     }
 }

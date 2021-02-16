@@ -2,6 +2,7 @@ using System.Net;
 using DutyCycle.API.Models;
 using DutyCycle.Common;
 using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -44,6 +45,9 @@ namespace DutyCycle.API.Filters
                     break;
                 case DomainException<PermissionDenied> exception:
                     SetResult(exception, HttpStatusCode.Forbidden);
+                    break;
+                case DomainException<SlackConnectionNotFound> exception:
+                    SetResult(exception, HttpStatusCode.NotFound);
                     break;
             }
         }
