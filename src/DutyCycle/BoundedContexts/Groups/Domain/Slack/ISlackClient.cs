@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace DutyCycle.Groups.Domain.Triggers
+namespace DutyCycle.Groups.Domain.Slack
 {
     public interface ISlackClient
     {

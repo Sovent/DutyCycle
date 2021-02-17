@@ -14,13 +14,14 @@ namespace DutyCycle.Groups.Application
             IGroupRepository repository,
             IGroupSettingsValidator groupSettingsValidator,
             IRotationScheduler rotationScheduler,
-            TriggersContext triggersContext)
+            ITriggersContextFactory triggersContextFactory)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _groupSettingsValidator =
                 groupSettingsValidator ?? throw new ArgumentNullException(nameof(groupSettingsValidator));
             _rotationScheduler = rotationScheduler ?? throw new ArgumentNullException(nameof(rotationScheduler));
-            _triggersContext = triggersContext ?? throw new ArgumentNullException(nameof(triggersContext));
+            _triggersContextFactory =
+                triggersContextFactory ?? throw new ArgumentNullException(nameof(triggersContextFactory));
         }
         
         public async Task<GroupInfo> GetGroup(int groupId)
@@ -62,7 +63,9 @@ namespace DutyCycle.Groups.Application
             
             _groupSettingsValidator.Validate(groupSettings);
 
-            await group.ChangeSettings(groupSettings, _triggersContext);
+            var triggersContext = await _triggersContextFactory.CreateContext(group.OrganizationId);
+            
+            await group.ChangeSettings(groupSettings, triggersContext);
 
             await _repository.Save(group);
             
@@ -74,7 +77,8 @@ namespace DutyCycle.Groups.Application
             if (newGroupMemberInfo == null) throw new ArgumentNullException(nameof(newGroupMemberInfo));
             
             var group = await _repository.Get(groupId);
-            await group.AddMember(newGroupMemberInfo, _triggersContext);
+            var triggersContext = await _triggersContextFactory.CreateContext(group.OrganizationId);
+            await group.AddMember(newGroupMemberInfo, triggersContext);
             await _repository.Save(group);
         }
 
@@ -97,13 +101,14 @@ namespace DutyCycle.Groups.Application
         public async Task RotateDutiesInGroup(int groupId)
         {
             var group = await _repository.Get(groupId);
-            await group.RotateDuties(_triggersContext);
+            var triggersContext = await _triggersContextFactory.CreateContext(group.OrganizationId);
+            await group.RotateDuties(triggersContext);
             await _repository.Save(group);
         }
 
         private readonly IGroupRepository _repository;
         private readonly IGroupSettingsValidator _groupSettingsValidator;
         private readonly IRotationScheduler _rotationScheduler;
-        private readonly TriggersContext _triggersContext;
+        private readonly ITriggersContextFactory _triggersContextFactory;
     }
 }

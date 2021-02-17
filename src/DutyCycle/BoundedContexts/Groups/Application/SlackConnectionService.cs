@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Slack;
 
 namespace DutyCycle.Groups.Application
 {

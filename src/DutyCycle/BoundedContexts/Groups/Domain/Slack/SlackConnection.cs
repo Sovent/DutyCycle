@@ -1,7 +1,7 @@
 using System;
 using LanguageExt;
 
-namespace DutyCycle.Groups.Domain.Organizations
+namespace DutyCycle.Groups.Domain.Slack
 {
     public class SlackConnection
     {

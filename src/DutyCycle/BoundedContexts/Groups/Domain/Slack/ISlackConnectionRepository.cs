@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using LanguageExt;
 
-namespace DutyCycle.Groups.Domain.Organizations
+namespace DutyCycle.Groups.Domain.Slack
 {
     public interface ISlackConnectionRepository
     {

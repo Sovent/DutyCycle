@@ -3,6 +3,7 @@ using DutyCycle.API.Models;
 using DutyCycle.Common;
 using DutyCycle.Groups.Domain;
 using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Slack;
 using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

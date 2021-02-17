@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Slack;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,9 +13,9 @@ namespace DutyCycle.Infrastructure.EntityFramework
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
         
-        public Task<SlackConnection> GetById(Guid id)
+        public async Task<SlackConnection> GetById(Guid id)
         {
-            var connection = _dbContext.SlackConnections.FirstOrDefaultAsync(c => c.Id == id);
+            var connection = await _dbContext.SlackConnections.FirstOrDefaultAsync(c => c.Id == id);
             if (connection == default)
             {
                 throw new SlackConnectionNotFound(id, DateTimeOffset.UtcNow).ToException();
