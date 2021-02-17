@@ -2,10 +2,13 @@ using Cronos;
 using DutyCycle.Common;
 using DutyCycle.Groups.Domain;
 using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Slack;
 using DutyCycle.Groups.Domain.Triggers;
 using DutyCycle.Users.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
+using static LanguageExt.Prelude;
 
 namespace DutyCycle.Infrastructure.EntityFramework
 {
@@ -56,17 +59,39 @@ namespace DutyCycle.Infrastructure.EntityFramework
             modelBuilder.Entity<Organization>(builder =>
             {
                 builder.HasKey(organization => organization.Id);
-                builder.HasMany<Group>().WithOne().HasForeignKey(group => group.OrganizationId).IsRequired();
+                builder
+                    .HasMany<Group>()
+                    .WithOne()
+                    .HasForeignKey(group => group.OrganizationId)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<User>(builder =>
             {
                 builder.HasOne<Organization>().WithMany().HasForeignKey(user => user.OrganizationId).IsRequired();
             });
+
+            modelBuilder.Entity<SlackConnection>(builder =>
+            {
+                builder.ToTable("SlackConnections");
+                builder.HasKey(connection => connection.Id);
+                builder.Property(connection => connection.Id).ValueGeneratedNever();
+                builder
+                    .HasOne<Organization>()
+                    .WithOne()
+                    .HasForeignKey<SlackConnection>(connection => connection.OrganizationId)
+                    .IsRequired();
+                builder
+                    .Property("_accessToken")
+                    .IsRequired(false);
+                builder.Ignore(connection => connection.AccessToken);
+            });
         }
         
         public DbSet<Group> Groups { get; set; }
         
         public DbSet<Organization> Organizations { get; set; }
+        
+        public DbSet<SlackConnection> SlackConnections { get; set; }
     }
 }

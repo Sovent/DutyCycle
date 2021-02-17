@@ -1,7 +1,7 @@
 using System;
 using DutyCycle.Common;
 
-namespace DutyCycle.Groups.Domain
+namespace DutyCycle.Groups.Domain.Slack
 {
     public class SlackInteractionFailed : DomainError<SlackInteractionFailed>
     {

@@ -3,15 +3,17 @@ using System;
 using DutyCycle.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DutyCycle.API.Migrations
 {
     [DbContext(typeof(DutyCycleDbContext))]
-    partial class DutyCycleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210216043943_AddSlackIntegration")]
+    partial class AddSlackIntegration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,15 +94,12 @@ namespace DutyCycle.API.Migrations
                     b.Property<int>("OrganizationId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("_accessToken")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrganizationId")
                         .IsUnique();
 
-                    b.ToTable("SlackConnections");
+                    b.ToTable("InitiatedSlackConnections");
                 });
 
             modelBuilder.Entity("DutyCycle.Groups.Domain.Triggers.RotationChangedTrigger", b =>

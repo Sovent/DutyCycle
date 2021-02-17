@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,6 +9,7 @@ using DutyCycle.API.Mapping;
 using DutyCycle.Groups.Application;
 using DutyCycle.Groups.Domain;
 using DutyCycle.Groups.Domain.Organizations;
+using DutyCycle.Groups.Domain.Slack;
 using DutyCycle.Groups.Domain.Triggers;
 using DutyCycle.Infrastructure;
 using DutyCycle.Infrastructure.EntityFramework;
@@ -24,8 +27,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SlackAPI;
-using SlackClient = DutyCycle.Infrastructure.Slack.SlackClient;
 using User = DutyCycle.Users.Domain.User;
 
 namespace DutyCycle.API
@@ -92,12 +93,12 @@ namespace DutyCycle.API
 
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGroupRepository, GroupRepository>();
-            services.AddSingleton<ISlackClient, SlackClient>();
             services.AddSingleton<ISlackMessageTemplater, SlackMessageTemplater>();
-            services.AddSingleton<TriggersContext>();
+            services.AddScoped<ITriggersContextFactory, TriggersContextFactory>();
             services.AddSingleton<IGroupSettingsValidator, GroupSettingsValidator>();
             services.AddSingleton<IRotationScheduler, RotationScheduler>();
-            services.AddSingleton(_ => new SlackTaskClient(Configuration["SlackOAuthToken"]));
+            
+            ConfigureSlackIntegration(services);
 
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IOrganizationsService, OrganizationsService>();
@@ -123,6 +124,32 @@ namespace DutyCycle.API
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
                 .UsePostgreSqlStorage(connectionString));
+        }
+
+        private void ConfigureSlackIntegration(IServiceCollection services)
+        {
+            var slackClientId = Configuration["Slack:ClientId"];
+            var slackClientSecret = Configuration["Slack:ClientSecret"];
+            var slackUrl = Configuration["Slack:BaseUrl"];
+
+            services.AddScoped<ISlackClientFactory, SlackClientFactory>();
+            services.AddSingleton<IAddToSlackLinkProvider, AddToSlackLinkProvider>(provider =>
+                new AddToSlackLinkProvider(slackClientId));
+            services.AddScoped<ISlackConnectionRepository, SlackConnectionRepository>();
+            services.AddScoped<ISlackIntegrationService, SlackConnectionService>();
+
+            const string slackHttpClientName = "SlackClient";
+            services.AddHttpClient(slackHttpClientName, client =>
+            {
+                client.BaseAddress = new Uri(slackUrl);
+            });
+            
+            services.AddScoped<ISlackAccessTokenRetriever, SlackAccessTokenRetriever>(provider =>
+            {
+                var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient(slackHttpClientName);
+                return new SlackAccessTokenRetriever(httpClient, slackClientId, slackClientSecret);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)

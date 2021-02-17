@@ -125,6 +125,11 @@ namespace DutyCycle.IntegrationTests
                 await HttpClient.PostAsJsonAsync($"/groups/{groupId}/members", newMemberInfo);
             Assert.AreEqual(HttpStatusCode.OK, addMemberResponse.StatusCode);
         }
+
+        protected async Task<HttpResponseMessage> AddTrigger(int groupId, RotationChangedTrigger trigger)
+        {
+            return await HttpClient.PostAsJsonAsync($"/groups/{groupId}/triggers", trigger, _jsonSerializerOptions);
+        }
         
         private ApiWebApplicationFactory _factory;
         protected HttpClient HttpClient;

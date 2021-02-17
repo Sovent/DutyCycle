@@ -38,7 +38,7 @@ namespace DutyCycle.IntegrationTests
         public async Task EditGroupSettings_ChangesAreRepresentedInGetGroupResponse()
         {
             var groupToEditId = await CreateGroupAndGetId();
-            var newGroupSettings = new API.Models.GroupSettings()
+            var newGroupSettings = new GroupSettings()
             {
                 Name = Fixture.Create<string>(),
                 CyclingCronExpression = "15 5 5 1 0",
@@ -61,9 +61,7 @@ namespace DutyCycle.IntegrationTests
 
             var sendSlackMessageTrigger = Fixture.Create<SendSlackMessageTrigger>();
 
-            var addTriggerResponse = await HttpClient.PostAsJsonAsync(
-                $"/groups/{groupToChangeTriggersId}/triggers",
-                sendSlackMessageTrigger);
+            var addTriggerResponse = await AddTrigger(groupToChangeTriggersId, sendSlackMessageTrigger);
             Assert.AreEqual(HttpStatusCode.OK, addTriggerResponse.StatusCode);
             
             var groupWithTrigger = await GetGroup(groupToChangeTriggersId);

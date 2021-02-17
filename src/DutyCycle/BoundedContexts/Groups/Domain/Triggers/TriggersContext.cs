@@ -1,4 +1,5 @@
 using System;
+using DutyCycle.Groups.Domain.Slack;
 
 namespace DutyCycle.Groups.Domain.Triggers
 {
