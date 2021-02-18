@@ -8,18 +8,43 @@
       "essential": false
     },
     {
-      "name": "api",
-      "image": "sovent/dutycycleapi",
+      "name": "frontend",
+      "image": "sovent/dutycyclefrontend",
+      "memory": 100,
+      "hostname": "frontend",
+      "essential": false
+    },
+    {
+      "name": "nginx",
+      "image": "sovent/dutycyclenginx",
+      "memory": 100,
+      "essential": true,
+      "dependsOn": [
+        {
+          "containerName": "frontend",
+          "condition": "START"
+        },
+        {
+          "containerName": "api",
+          "condition": "START"
+        }
+      ],
       "portMappings": [
         {
           "hostPort": 80,
-          "containerPort": 5000
+          "containerPort": 80
         },
         {
           "hostPort": 8080,
-          "containerPort": 5001
+          "containerPort": 8080
         }
       ],
+      "links": ["api", "frontend"]
+    },
+    {
+      "name": "api",
+      "image": "sovent/dutycycleapi",
+      "hostname": "api",
       "dependsOn": [
         {
           "containerName": "migrations",

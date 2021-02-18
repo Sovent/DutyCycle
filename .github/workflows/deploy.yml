@@ -55,6 +55,9 @@ jobs:
       - name: Build migrations
         run: docker build -t sovent/dutycyclemigrations -f docker/production/migrations/Dockerfile .
         
+      - name: Build nginx
+        run: docker build -t sovent/dutycyclenginx -f docker/production/nginx/Dockerfile .
+        
       - name: Push api
         run: docker push sovent/dutycycleapi
 
@@ -63,6 +66,9 @@ jobs:
 
       - name: Push migrations
         run: docker push sovent/dutycyclemigrations
+        
+      - name: Push nginx
+        run: docker push sovent/dutycyclenginx
         
   push-to-aws:
     name: "Push AWS to deploy"
