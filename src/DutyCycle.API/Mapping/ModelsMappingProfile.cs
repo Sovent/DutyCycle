@@ -3,8 +3,10 @@ using Cronos;
 using DutyCycle.API.Models;
 using DutyCycle.Common;
 using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Users;
 using GroupSettings = DutyCycle.Groups.Domain.GroupSettings;
+using NewOrganizationInfo = DutyCycle.API.Models.NewOrganizationInfo;
 using RotationChangedTrigger = DutyCycle.Groups.Domain.Triggers.RotationChangedTrigger;
 using SendSlackMessageTrigger = DutyCycle.Groups.Domain.Triggers.SendSlackMessageTrigger;
 using UserCredentials = DutyCycle.Users.Domain.UserCredentials;
@@ -31,6 +33,7 @@ namespace DutyCycle.API.Mapping
                         groupInfo => groupInfo.CyclingCronExpression.ToString(CronFormat.Standard)));
 
             CreateMap<NewOrganizationInfo, Groups.Domain.Organizations.NewOrganizationInfo>();
+            CreateMap<Organization, OrganizationInfo>();
 
             CreateMap<Models.UserCredentials, UserCredentials>();
         }

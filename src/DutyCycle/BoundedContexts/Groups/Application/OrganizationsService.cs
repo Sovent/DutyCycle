@@ -21,7 +21,12 @@ namespace DutyCycle.Groups.Application
 
             return organizationToCreate.Id;
         }
-        
+
+        public async Task<Organization> GetOrganizationInfo(int organizationId)
+        {
+            return await _repository.Get(organizationId);
+        }
+
         private readonly IOrganizationRepository _repository;
     }
 }
