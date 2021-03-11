@@ -1,15 +1,19 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Web;
 using AutoFixture;
 using DutyCycle.API.Models;
+using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Groups.Domain.Slack;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
+using OrganizationInfo = DutyCycle.API.Models.OrganizationInfo;
+using OrganizationSlackInfo = DutyCycle.Groups.Domain.Organizations.OrganizationSlackInfo;
 
 namespace DutyCycle.IntegrationTests
 {
@@ -79,6 +83,23 @@ namespace DutyCycle.IntegrationTests
             _tokenRetrieverMock.Verify(retriever => retriever.RetrieveToken(secondAuthenticationCode), Times.Once);
         }
 
+        [Test]
+        public async Task ConfirmConnection_ConnectionInfoIsReturnedInOrganizationInfo()
+        {
+            const string workspaceName = "test_workspace";
+            _slackClientMock
+                .Setup(client => client.GetInfo())
+                .Returns(Task.FromResult(new OrganizationSlackInfo(workspaceName)));
+            var authenticationCode = Fixture.Create<string>();
+            var addToSlackLink = await GetAddToSlackLink();
+            var connectionId = GetConnectionIdFromAddToSlackLink(addToSlackLink);
+            await ConfirmConnection(connectionId, authenticationCode);
+
+            var organizationInfo = await HttpClient.GetFromJsonAsync<OrganizationInfo>("organizations/current");
+            
+            Assert.AreEqual(workspaceName, organizationInfo.SlackInfo.WorkspaceName);
+        }
+        
         [Test]
         public async Task AddMemberWithSendSlackMessageTriggerAndSetConnection_UsesClientFactoryAndClient()
         {

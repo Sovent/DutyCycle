@@ -7,6 +7,8 @@ using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Users;
 using GroupSettings = DutyCycle.Groups.Domain.GroupSettings;
 using NewOrganizationInfo = DutyCycle.API.Models.NewOrganizationInfo;
+using OrganizationInfo = DutyCycle.Groups.Domain.Organizations.OrganizationInfo;
+using OrganizationSlackInfo = DutyCycle.Groups.Domain.Organizations.OrganizationSlackInfo;
 using RotationChangedTrigger = DutyCycle.Groups.Domain.Triggers.RotationChangedTrigger;
 using SendSlackMessageTrigger = DutyCycle.Groups.Domain.Triggers.SendSlackMessageTrigger;
 using UserCredentials = DutyCycle.Users.Domain.UserCredentials;
@@ -33,7 +35,13 @@ namespace DutyCycle.API.Mapping
                         groupInfo => groupInfo.CyclingCronExpression.ToString(CronFormat.Standard)));
 
             CreateMap<NewOrganizationInfo, Groups.Domain.Organizations.NewOrganizationInfo>();
-            CreateMap<Organization, OrganizationInfo>();
+
+            CreateMap<OrganizationSlackInfo, Models.OrganizationSlackInfo>();
+            CreateMap<OrganizationInfo, Models.OrganizationInfo>()
+                .ForMember(
+                    info => info.SlackInfo,
+                    configuration =>
+                        configuration.MapFrom(domainInfo => domainInfo.SlackInfo.IfNoneUnsafe(() => null)));
 
             CreateMap<Models.UserCredentials, UserCredentials>();
         }

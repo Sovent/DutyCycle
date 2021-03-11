@@ -7,6 +7,6 @@ namespace DutyCycle.Groups.Application
     {
         Task<int> Create(NewOrganizationInfo newOrganizationInfo);
 
-        Task<Organization> GetOrganizationInfo(int organizationId);
+        Task<OrganizationInfo> GetOrganizationInfo(int organizationId);
     }
 }

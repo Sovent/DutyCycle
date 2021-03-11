@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using DutyCycle.Groups.Domain.Organizations;
 
 namespace DutyCycle.Groups.Domain.Slack
 {
@@ -9,7 +10,13 @@ namespace DutyCycle.Groups.Domain.Slack
         {
             _organizationId = organizationId;
         }
-        
+
+        public async Task<OrganizationSlackInfo> GetInfo()
+        {
+            ThrowConnectionNotFound();
+            return null;
+        }
+
         public async Task SendMessageToChannel(string channelId, string message)
         {
             ThrowConnectionNotFound();

@@ -1,8 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using DutyCycle.Groups.Domain;
+using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Groups.Domain.Slack;
-using DutyCycle.Groups.Domain.Triggers;
 using SlackAPI;
 
 namespace DutyCycle.Infrastructure.Slack
@@ -15,7 +14,12 @@ namespace DutyCycle.Infrastructure.Slack
         {
             _slackTaskClient = slackTaskClient ?? throw new ArgumentNullException(nameof(slackTaskClient));
         }
-        
+
+        public Task<OrganizationSlackInfo> GetInfo()
+        {
+            return Task.FromResult(new OrganizationSlackInfo(_slackTaskClient.MyTeam.name));
+        }
+
         public async Task SendMessageToChannel(string channelId, string message)
         {
             if (channelId == null) throw new ArgumentNullException(nameof(channelId));
