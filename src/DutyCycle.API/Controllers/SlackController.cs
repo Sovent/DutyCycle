@@ -30,24 +30,16 @@ namespace DutyCycle.API.Controllers
             return Ok(link);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("slackconnection")]
         public async Task<IActionResult> ConfirmSlackConnection(
-            [FromQuery]string code, 
-            [FromQuery]Guid state,
-            [FromQuery]string error)
+            [FromBody]SlackConnectionConfirmation confirmation)
         {
-            if (error != null)
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    ErrorDescription = error
-                });
-            }
-            
-            await _slackIntegrationService.CompleteSlackConnection(state, code);
+            await _slackIntegrationService.CompleteSlackConnection(
+                confirmation.ConnectionId,
+                confirmation.AuthenticationCode);
 
-            return Ok("Slack connection completed");
+            return Ok();
         }
         
         private readonly ISlackIntegrationService _slackIntegrationService;

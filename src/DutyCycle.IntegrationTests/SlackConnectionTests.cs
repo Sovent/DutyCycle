@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Web;
 using AutoFixture;
 using DutyCycle.API.Models;
-using DutyCycle.Groups.Domain.Organizations;
 using DutyCycle.Groups.Domain.Slack;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
@@ -143,7 +142,13 @@ namespace DutyCycle.IntegrationTests
 
         private async Task<HttpResponseMessage> ConfirmConnection(Guid connectionId, string authenticationCode)
         {
-            return await HttpClient.GetAsync($"slackconnection?code={authenticationCode}&state={connectionId}");
+            return await HttpClient.PostAsJsonAsync(
+                "slackconnection",
+                new SlackConnectionConfirmation
+                {
+                    AuthenticationCode = authenticationCode,
+                    ConnectionId = connectionId
+                });
         }
 
         private Mock<ISlackAccessTokenRetriever> _tokenRetrieverMock = new Mock<ISlackAccessTokenRetriever>();
