@@ -85,6 +85,7 @@ namespace DutyCycle.Infrastructure.EntityFramework
                     .Property("_accessToken")
                     .IsRequired(false);
                 builder.Ignore(connection => connection.AccessToken);
+                builder.Ignore(connection => connection.IsComplete);
             });
         }
         

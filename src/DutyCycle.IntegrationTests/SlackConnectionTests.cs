@@ -98,6 +98,16 @@ namespace DutyCycle.IntegrationTests
             
             Assert.AreEqual(workspaceName, organizationInfo.SlackInfo.WorkspaceName);
         }
+
+        [Test]
+        public async Task GetOrganizationInfoWithIncompleteSlackConnection_SlackConnectionIsAbsent()
+        {
+            await GetAddToSlackLink();
+            
+            var organizationInfo = await HttpClient.GetFromJsonAsync<OrganizationInfo>("organizations/current");
+            
+            Assert.IsNull(organizationInfo.SlackInfo);
+        }
         
         [Test]
         public async Task AddMemberWithSendSlackMessageTriggerAndSetConnection_UsesClientFactoryAndClient()

@@ -18,6 +18,8 @@ namespace DutyCycle.Groups.Domain.Slack
         
         public int OrganizationId { get; private set; }
 
+        public bool IsComplete => AccessToken.IsSome;
+        
         public Option<string> AccessToken => _accessToken;
 
         public void SetAccessToken(string token)

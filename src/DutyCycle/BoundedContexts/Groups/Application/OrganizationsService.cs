@@ -33,11 +33,13 @@ namespace DutyCycle.Groups.Application
         {
             var organization = await _repository.Get(organizationId);
             var slackConnection = await _slackConnectionRepository.TryGetForOrganization(organizationId);
-            var slackInfo = await slackConnection.MapAsync(connection =>
-            {
-                var slackClient = _slackClientFactory.Create(organizationId, connection);
-                return slackClient.GetInfo();
-            }).ToOption();
+            var slackInfo = await slackConnection
+                .Where(connection => connection.IsComplete)
+                .MapAsync(connection =>
+                {
+                    var slackClient = _slackClientFactory.Create(organizationId, connection);
+                    return slackClient.GetInfo();
+                }).ToOption();
             
             return new OrganizationInfo(organization.Id, organization.Name, slackInfo);
         }
