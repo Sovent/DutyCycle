@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DutyCycle.API.Controllers
 {
     [ApiController]
+    [Authorize]
     public class SlackController : ControllerBase
     {
         public SlackController(ISlackIntegrationService slackIntegrationService)
@@ -17,7 +18,6 @@ namespace DutyCycle.API.Controllers
                                        throw new ArgumentNullException(nameof(slackIntegrationService));
         }
 
-        [Authorize]
         [HttpGet]
         [Route("addtoslacklink")]
         public async Task<IActionResult> GetAddToSlackLink()

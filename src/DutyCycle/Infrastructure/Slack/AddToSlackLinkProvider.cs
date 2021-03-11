@@ -23,7 +23,8 @@ namespace DutyCycle.Infrastructure.Slack
             "commands", 
             "chat:write",
             "chat:write.customize", 
-            "chat:write.public", 
+            "chat:write.public",
+            "team:read",
             "usergroups:read", 
             "usergroups:write");
         

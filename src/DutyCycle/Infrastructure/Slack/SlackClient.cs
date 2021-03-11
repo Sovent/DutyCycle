@@ -15,9 +15,10 @@ namespace DutyCycle.Infrastructure.Slack
             _slackTaskClient = slackTaskClient ?? throw new ArgumentNullException(nameof(slackTaskClient));
         }
 
-        public Task<OrganizationSlackInfo> GetInfo()
+        public async Task<OrganizationSlackInfo> GetInfo()
         {
-            return Task.FromResult(new OrganizationSlackInfo(_slackTaskClient.MyTeam.name));
+            var response = await _slackTaskClient.APIRequestWithTokenAsync<TeamInfoResponse>();
+            return new OrganizationSlackInfo(response.team.name);
         }
 
         public async Task SendMessageToChannel(string channelId, string message)
